@@ -1,28 +1,58 @@
-# IDE
+# ============================
+# 🔹 IDE & OS 관련 파일
+# ============================
 .idea/
 .vscode/
-
-# OS junk
+*.iml
 .DS_Store
 
-# Java build
+# ============================
+# 🔹 Java / Spring Boot 빌드 결과물
+# ============================
 target/
 build/
+out/
 
-# Node
+# ============================
+# 🔹 Node / React
+# ============================
 node_modules/
+dollar-front/node_modules/
 
-# Logs
-*.log
+# ============================
+# 🔹 Logs
+# ============================
 logs/
+*.log
 
-# Docker volumes
+# ============================
+# 🔹 Docker volumes & local data
+# ============================
 uploads/
 db_data/
 data/
-/10-trillion-dollars/10-trillion-dollars/
-# Spring config
 
-# Env
+# ============================
+# 🔹 내부 옛날 모놀리식 프로젝트 제외
+# ============================
+10-trillion-dollars/10-trillion-dollars/
+
+# ============================
+# 🔹 Cloudflare Tunnel credentials
+# ============================
+cloudflared/*.json
+
+# ============================
+# 🔹 Environment files (민감)
+# ============================
 .env
-.env.example
+.env.*
+*.env
+
+# ============================
+# 🔹 Spring Boot config (선택)
+#    ※ application.yml을 깃에 올릴 경우 주석 처리하세요
+# ============================
+# application.yml
+# application.yaml
+# application.properties
