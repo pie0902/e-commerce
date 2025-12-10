@@ -1,0 +1,73 @@
+h1 {
+  color: #333;
+}
+
+.profile-section {
+  margin-bottom: 20px;
+}
+
+.profile-section label {
+  font-weight: bold;
+}
+
+.profile-section p {
+  margin-top: 5px;
+}
+
+.profile-section button {
+  margin-left: 10px;
+}
+
+#addressList {
+  margin-top: 10px;
+}
+
+.address-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.address-container p {
+  margin: 5px 0;
+}
+
+.address-container button {
+  margin-right: 5px;
+}
+
+.userPasswordChangeBtn{
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  background-color: #45a049;
+}
+.usernameChangeBtn{
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  background-color: #45a049;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+.myPageSubmitArea {
+  display: flex;
+  align-items: flex-end;
+}
+.myPageSubmitArea button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  background-color: #45a049;
+}

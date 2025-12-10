@@ -1,0 +1,10 @@
+# Sample Cloudflare Tunnel config (edit hostnames for your domain)
+# Place real credentials file path after creating the tunnel.
+
+tunnel: thunderdev-site
+credentials-file: /etc/cloudflared/thunderdev-site.json
+
+ingress:
+  - hostname: thunderdev.site
+    service: http://localhost:8080
+  - service: http_status:404

@@ -1,0 +1,88 @@
+/* Swagger UI custom theme: Newspaper-style (approximation) */
+/* Serif typography, high contrast, subtle borders */
+
+@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Source+Serif+4:wght@400;600;700&display=swap');
+
+:root {
+  --np-font-serif: 'Source Serif 4', 'Domine', Georgia, 'Times New Roman', serif;
+  --np-black: #111;
+  --np-gray-900: #1f2937;
+  --np-gray-700: #374151;
+  --np-gray-100: #f3f4f6;
+  --np-border: #e5e7eb;
+  --np-accent: #000000;
+}
+
+.swagger-ui, .swagger-ui * {
+  font-family: var(--np-font-serif) !important;
+}
+
+.swagger-ui .topbar {
+  background: #fff !important;
+  border-bottom: 2px solid var(--np-black) !important;
+}
+.swagger-ui .topbar .download-url-wrapper .select-label select,
+.swagger-ui .topbar .download-url-wrapper .select-label {
+  color: var(--np-gray-900) !important;
+}
+.swagger-ui .topbar a.link span { color: var(--np-black) !important; }
+
+/* Headings */
+.swagger-ui .info h2, .swagger-ui .opblock-tag {
+  color: var(--np-black) !important;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  border-bottom: 1px solid var(--np-black);
+  padding-bottom: 6px;
+}
+
+/* Operation blocks */
+.swagger-ui .opblock {
+  border: 1px solid var(--np-border) !important;
+  box-shadow: none !important;
+}
+.swagger-ui .opblock-summary {
+  background: #fff !important;
+  border-bottom: 1px solid var(--np-border) !important;
+}
+.swagger-ui .opblock-tag-section h4 svg { display: none; }
+
+/* HTTP method badges */
+.opblock.opblock-get .opblock-summary-method { background: #0b7285 !important; }
+.opblock.opblock-post .opblock-summary-method { background: #2b8a3e !important; }
+.opblock.opblock-put .opblock-summary-method { background: #b45309 !important; }
+.opblock.opblock-delete .opblock-summary-method { background: #9f1239 !important; }
+.opblock .opblock-summary-method { border-radius: 0 !important; }
+
+/* Buttons */
+.swagger-ui .btn, .swagger-ui .opblock-control-arrow, .swagger-ui .opblock-control-arrow::after {
+  border-radius: 0 !important;
+}
+.swagger-ui .btn {
+  background: var(--np-black) !important;
+  border: 1px solid var(--np-black) !important;
+}
+.swagger-ui .btn:hover { filter: brightness(0.9); }
+
+/* Schemas / models */
+.swagger-ui .model-box {
+  border: 1px solid var(--np-border) !important;
+}
+.swagger-ui .response-col_description__inner { background: #fff !important; }
+
+/* Tables */
+.swagger-ui table.model tr, .swagger-ui table.headers tr {
+  border-bottom: 1px solid var(--np-border) !important;
+}
+.swagger-ui table thead tr th { border-bottom: 2px solid var(--np-black) !important; }
+
+/* Inputs */
+.swagger-ui input, .swagger-ui textarea, .swagger-ui select {
+  border-radius: 0 !important;
+  border: 1px solid var(--np-border) !important;
+  box-shadow: none !important;
+}
+
+/* Markdown descriptions */
+.swagger-ui .markdown p { color: var(--np-gray-900) !important; }
+

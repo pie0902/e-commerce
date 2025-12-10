@@ -1,0 +1,126 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:975050182378:task-definition/testest-product:1",
+    "containerDefinitions": [
+        {
+            "name": "testest-container",
+            "image": "975050182378.dkr.ecr.ap-northeast-2.amazonaws.com/10-trillion-dollars:product",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "testest-container-8083",
+                    "containerPort": 8083,
+                    "hostPort": 8083,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "access.key.id",
+                    "value": "AKIA6GBMFB3VONYM366B"
+                },
+                {
+                    "name": "aws.secret.key",
+                    "value": "b5M6asr8AGvwgJqCY+Wh7xWVSCP0Tr3NY9pqzXv"
+                },
+                {
+                    "name": "redis.host",
+                    "value": "redis-dev.msr86t.ng.0001.apn2.cache.amazonaws.com"
+                },
+                {
+                    "name": "review.bucket.name",
+                    "value": "tenshopreview1"
+                },
+                {
+                    "name": "jwt.secret.key",
+                    "value": "7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg=="
+                },
+                {
+                    "name": "rds.username",
+                    "value": "admin"
+                },
+                {
+                    "name": "kakao.api.admin-key",
+                    "value": "8745deda04b6dc8c5c731bb3f5f61d03"
+                },
+                {
+                    "name": "rds.password",
+                    "value": "1234qwer"
+                },
+                {
+                    "name": "rds.host",
+                    "value": "jdbc:mysql://team-database.cluwm6cyw12w.ap-northeast-2.rds.amazonaws.com:3306/teamdb?serverTimezone=UTC&characterEncoding=UTF-8"
+                },
+                {
+                    "name": "product.bucket.name",
+                    "value": "tenshopproduct1"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/testest-product",
+                    "awslogs-region": "ap-northeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "testest-product",
+    "executionRoleArn": "arn:aws:iam::975050182378:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-04-17T13:58:01.587Z",
+    "registeredBy": "arn:aws:iam::975050182378:user/joo",
+    "tags": []
+}

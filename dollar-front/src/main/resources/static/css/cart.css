@@ -1,0 +1,74 @@
+/* 전역 바디 스타일은 common.css를 사용합니다. */
+
+h2 {
+  color: #333;
+}
+
+#cartItems {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+#cartItems .cartItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+#cartItems .cartItem:last-child {
+  border-bottom: none;
+}
+
+#cartItems .itemName {
+  flex-grow: 1;
+}
+
+#cartItems .itemQuantity {
+  margin-left: 10px;
+}
+
+#cartItems .cartItem button {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+#cartItems .cartItem button:hover {
+  background-color: #45a049;
+}
+
+#addressSelect {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+#totalPrice {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+#placeOrderBtn {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#placeOrderBtn:hover {
+  background-color: #45a049;
+}

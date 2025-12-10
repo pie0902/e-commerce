@@ -1,0 +1,46 @@
+h2 {
+  margin-bottom: 20px;
+}
+
+.orderItem {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.orderDetail {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.orderDetail p {
+  margin: 5px 0;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.payBtn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.showDetailBtn {
+  background-color: #2196F3;
+  color: white;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}

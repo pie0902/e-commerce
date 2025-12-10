@@ -1,0 +1,162 @@
+#productDetail {
+  display: flex;
+  gap: 32px;
+  align-items: stretch;
+  margin: 0 auto 20px auto;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 420px;
+}
+
+.productDetailImage { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+.productDetailItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.productDetailItem h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.productDetailItem p {
+  margin-bottom: 8px;
+}
+
+#productPrice {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#productDescription {
+  margin-top: 20px;
+  line-height: 1.5;
+}
+
+#productStock {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#adminName {
+  margin-top: 10px;
+  font-style: italic;
+  color: #888;
+}
+#productImage { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+#productDetail h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+#productDetail p {
+  margin: 10px 0;
+}
+
+.quantity-container {
+  margin-bottom: 20px;
+}
+
+.quantity-container label {
+  font-weight: bold;
+}
+
+.quantity-container input {
+  width: 50px;
+  margin-left: 10px;
+}
+
+.quantity-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#reviewSection {
+  margin-top: 40px;
+}
+
+#reviewSection h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+#reviewList {
+  list-style-type: none;
+  padding: 0;
+}
+
+#reviewList li {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#reviewList li img {
+  width: 100px;
+  margin-bottom: 5px;
+}
+
+#reviewList li span {
+  display: block;
+  margin-bottom: 5px;
+}
+#addToCartBtn{
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/*수량 장바구니부터 리뷰까지의 틀*/
+.productDetail-wrap { margin: 0 auto; width: 100%; max-width: 1200px; }
+/*장바구니 담기*/
+.productDetail-addCart{ text-align: right; }
+/*리뷰 관련*/
+.reviewForm {
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 10px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.formGroup textarea {
+  width: 100%;
+  padding: 5px;
+  resize: vertical;
+}
+
+.formGroup select {
+  width: 100%;
+  padding: 5px;
+}
+
+.reviewForm button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.reviewForm button:hover {
+  background-color: #45a049;
+}

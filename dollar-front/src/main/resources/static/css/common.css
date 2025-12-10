@@ -1,0 +1,167 @@
+/* common.css (정돈된 기본 스타일 + 공통 컴포넌트) */
+
+/* 1) 폰트 + 리셋 */
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  --color-bg: #f7f8fb;
+  --color-surface: #ffffff;
+  --color-text: #111827;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-primary: #4CAF50; /* 기존 그린 톤 유지 */
+  --color-primary-hover: #43a047;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 6px 16px rgba(0,0,0,0.08);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+}
+
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+
+* { margin: 0; }
+
+body {
+  font-family: 'Pretendard-Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; padding-left: 0; }
+
+h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--color-text); }
+h1 { font-size: 28px; margin-bottom: var(--space-4); }
+h2 { font-size: 22px; margin-bottom: var(--space-3); }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+/* 2) 공통 폼/버튼 */
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 15px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: var(--color-primary);
+  color: #fff;
+}
+button:hover { background: var(--color-primary-hover); }
+
+/* 3) 헤더 */
+header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+}
+
+.logo img { height: 40px; }
+.logo h5 { font-size: 12px; color: var(--color-muted); margin-top: var(--space-1); }
+
+.menu { display: flex; gap: var(--space-4); }
+.menu li a { color: #374151; font-weight: 600; }
+.menu li a:hover { color: #111827; }
+
+#searchForm { display: flex; gap: var(--space-2); align-items: center; }
+#searchForm input[type="text"] { width: 220px; }
+
+.icons { font-size: 22px; display:flex; gap: var(--space-4); color: #374151; }
+.icons i { cursor: pointer; }
+.icons i:hover { color: #111827; }
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff5722;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+#orderPage, #logout {
+  margin-right: 10px;
+}
+
+/* 4) 카드/섹션 유틸 */
+.surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.section { padding: var(--space-5); margin-bottom: var(--space-6); }
+
+/* 5) 반응형 그리드 (메인 상품 리스트 개선) */
+#productList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-5);
+  padding: var(--space-5) 0;
+}
+
+.mainProductPage {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.mainProductPage-imageBox { height: 240px; }
+.mainProductPage-imageBox img { width: 100%; height: 100%; object-fit: cover; }
+
+.mainProductPage-itemBox { padding: var(--space-4); }
+.mainProductPage-itemBox h3 { font-size: 18px; margin-bottom: var(--space-2); }
+.mainProductPage-itemBox p { color: var(--color-muted); margin-bottom: var(--space-2); }
+.mainProductPage-itemBox .add-cart-btn { width: 100%; }
+
+/* 6) 테이블 */
+table { width: 100%; border-collapse: collapse; background: var(--color-surface); }
+th, td { border: 1px solid var(--color-border); padding: 10px; text-align: left; }
+th { background: #fafafa; }
+
+/* 7) 헬퍼 여백 */
+.mt-4 { margin-top: var(--space-4); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }

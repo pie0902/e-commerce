@@ -1,0 +1,154 @@
+version: '3.8'
+
+services:
+  # === 1. 인프라 (DB & Redis) ===
+  dollar-db:
+    image: mysql:8.0
+    container_name: dollar-db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-dollar_db}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+      - TZ=${TZ:-Asia/Seoul}
+    volumes:
+      - db_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dollar-network
+
+  dollar-redis:
+    image: redis:alpine
+    container_name: dollar-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dollar-network
+
+  # === 2. 백엔드 마이크로서비스 ===
+  dollar-user:
+    build: ./dollar-user
+    container_name: dollar-user
+    expose:
+      - "8082"
+    environment:
+      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+      - RDS_USERNAME=${RDS_USERNAME:-root}
+      - RDS_PASSWORD=${RDS_PASSWORD:-root}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
+    depends_on:
+      dollar-db:
+        condition: service_healthy
+    networks:
+      - dollar-network
+
+  dollar-product:
+    build: ./dollar-product
+    container_name: dollar-product
+    expose:
+      - "8083"
+    environment:
+      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+      - RDS_USERNAME=${RDS_USERNAME:-root}
+      - RDS_PASSWORD=${RDS_PASSWORD:-root}
+      - REDIS_HOST=dollar-redis
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID:-dummy}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-dummy}
+      - PRODUCT_BUCKET_NAME=${PRODUCT_BUCKET_NAME:-dummy}
+      - LOAD_USER=${LOAD_USER:-http://dollar-user:8082}
+      - LOAD_ORDER=${LOAD_ORDER:-http://dollar-order:8084}
+      - STORAGE_LOCAL_BASE_PATH=${STORAGE_LOCAL_BASE_PATH:-/data/uploads}
+      - STORAGE_MODE=${STORAGE_MODE:-local}
+      # Used to build public image URLs when STORAGE_MODE=local (Nginx on 8080)
+      - APP_BASE_URL=${PRODUCT_PUBLIC_BASE_URL:-http://localhost:8080/api/product}
+    volumes:
+      - ./uploads:/data/uploads
+    depends_on:
+      dollar-user:
+        condition: service_started
+    networks:
+      - dollar-network
+
+  dollar-order:
+    build: ./dollar-order
+    container_name: dollar-order
+    expose:
+      - "8084"
+    environment:
+      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+      - RDS_USERNAME=${RDS_USERNAME:-root}
+      - RDS_PASSWORD=${RDS_PASSWORD:-root}
+      - REDIS_HOST=dollar-redis
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
+      - KAKAO_API_ADMIN_KEY=${KAKAO_API_ADMIN_KEY:-DEV578F838590425AC23E1E89F7692DFE8F723BD}
+      # External public base URL for redirects (override in .env on server)
+      - ORDER_PUBLIC_BASE_URL=${ORDER_PUBLIC_BASE_URL:-http://localhost:8080}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID:-dummy}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-dummy}
+      - LOAD_USER=${LOAD_USER:-http://dollar-user:8082}
+      - LOAD_PRODUCT=${LOAD_PRODUCT:-http://dollar-product:8083}
+    depends_on:
+      dollar-product:
+        condition: service_started
+    networks:
+      - dollar-network
+
+  dollar-review:
+    build: ./dollar-review
+    container_name: dollar-review
+    expose:
+      - "8085"
+    environment:
+      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+      - RDS_USERNAME=${RDS_USERNAME:-root}
+      - RDS_PASSWORD=${RDS_PASSWORD:-root}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID:-dummy}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-dummy}
+      - REVIEW_BUCKET_NAME=${REVIEW_BUCKET_NAME:-dummy}
+      - LOAD_PRODUCT=${LOAD_PRODUCT:-http://dollar-product:8083}
+      - LOAD_ORDER=${LOAD_ORDER:-http://dollar-order:8084}
+    networks:
+      - dollar-network
+    depends_on:
+      dollar-db:
+        condition: service_healthy
+
+  # === 3. 프론트엔드 (웹 서버) ===
+  dollar-front:
+    build: ./dollar-front
+    container_name: dollar-front
+    expose:
+      - "8081"
+    networks:
+      - dollar-network
+
+  # === 4. Nginx Reverse Proxy ===
+  nginx:
+    image: nginx:alpine
+    container_name: dollar-nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - dollar-front
+      - dollar-user
+      - dollar-product
+      - dollar-order
+      - dollar-review
+    ports:
+      - "8080:80"
+    networks:
+      - dollar-network
+
+networks:
+  dollar-network:
+    driver: bridge
+
+volumes:
+  db_data:

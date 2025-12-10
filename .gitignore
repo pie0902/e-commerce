@@ -22,9 +22,6 @@ db_data/
 data/
 /10-trillion-dollars/10-trillion-dollars/
 # Spring config
-*.yml
-*.yaml
-application.properties
 
 # Env
 .env
