@@ -1,0 +1,31 @@
+# IDE
+.idea/
+.vscode/
+
+# OS junk
+.DS_Store
+
+# Java build
+target/
+build/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Docker volumes
+uploads/
+db_data/
+data/
+/10-trillion-dollars/10-trillion-dollars/
+# Spring config
+*.yml
+*.yaml
+application.properties
+
+# Env
+.env
+.env.example
