@@ -1,6 +1,8 @@
 spring:
   application:
     name: dollar-user
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: ${rds.host}
     username: ${rds.username}
