@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>쇼핑몰 메인 페이지</title>
@@ -7,48 +8,49 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/mainProduct.css">
 </head>
+
 <body>
-<div id="nav-container"></div>
-<main class="container">
-  <div id="productList">상품 목록이 여기에 표시됩니다.</div>
-  <div id="pagination" class="mt-4">
-    <button id="prevPage">이전 페이지</button>
-    <span id="currentPage">1</span>
-    <button id="nextPage">다음 페이지</button>
-  </div>
-  <!--<button id="adminDashboard">관리자 페이지</button>-->
-  
-</main>
+  <div id="nav-container"></div>
+  <main class="container">
+    <div id="productList">상품 목록이 여기에 표시됩니다.</div>
+    <div id="pagination" class="mt-4">
+      <button id="prevPage">이전 페이지</button>
+      <span id="currentPage">1</span>
+      <button id="nextPage">다음 페이지</button>
+    </div>
+    <!--<button id="adminDashboard">관리자 페이지</button>-->
 
-<script src="/js/env.js"></script>
-<script>
-  const product_url = API.PRODUCT;
-  let currentPage = 1; // 현재 페이지 번호 초기화
-  let currentSearchQuery = null; // 현재 검색 쿼리를 저장하는 변수
+  </main>
+
+  <script src="/js/env.js"></script>
+  <script>
+    const product_url = API.PRODUCT;
+    let currentPage = 1; // 현재 페이지 번호 초기화
+    let currentSearchQuery = null; // 현재 검색 쿼리를 저장하는 변수
 
 
 
-  // 검색 쿼리를 전역 변수로 저장
-  document.addEventListener('DOMContentLoaded', function() {
-    const searchParams = new URLSearchParams(window.location.search);
-    currentSearchQuery = searchParams.get('search'); // 이 부분 추가
-    if (currentSearchQuery) {
-      // 검색어로 검색 결과 처리
-      fetchSearchProducts(currentSearchQuery);
-    } else {
-      // 일반 상품 목록 표시
-      fetchProducts();
-    }
-  });
+    // 검색 쿼리를 전역 변수로 저장
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchParams = new URLSearchParams(window.location.search);
+      currentSearchQuery = searchParams.get('search'); // 이 부분 추가
+      if (currentSearchQuery) {
+        // 검색어로 검색 결과 처리
+        fetchSearchProducts(currentSearchQuery);
+      } else {
+        // 일반 상품 목록 표시
+        fetchProducts();
+      }
+    });
 
-  function displayProducts(products) {
-    const productList = document.getElementById('productList');
-    productList.innerHTML = '';
+    function displayProducts(products) {
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
 
-    products.forEach(product => {
-      const productElement = document.createElement('div');
-      productElement.classList.add("mainProductPage");
-      productElement.innerHTML = `
+      products.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.classList.add("mainProductPage");
+        productElement.innerHTML = `
             <div class="mainProductPage-imageBox">
             <!--<img src="images/TIL.jpeg" alt="${product.name}" style="cursor:pointer;" onclick="window.location.href = 'productDetail.html?productId=${product.id}'">-->
             <img src="${product.imageUrl}" alt="${product.name}"onclick="window.location.href = 'productDetail.html?productId=${product.id}'">
@@ -64,68 +66,69 @@
                 <button class="add-cart-btn">장바구니에 담기</button>
             </div>
         `;
-      productList.appendChild(productElement);
+        productList.appendChild(productElement);
 
-      // 장바구니에 담기 버튼에 이벤트 리스너 추가
-      productElement.querySelector('button').addEventListener('click', () => {
-        const quantity = productElement.querySelector('.quantity').value;
-        addToCart(product, quantity);
+        // 장바구니에 담기 버튼에 이벤트 리스너 추가
+        productElement.querySelector('button').addEventListener('click', () => {
+          const quantity = productElement.querySelector('.quantity').value;
+          addToCart(product, quantity);
+        });
       });
-    });
-  }
-
-
-  function fetchProducts() {
-    fetch(`${product_url}products?page=${currentPage - 1}&size=12`,{
-      method: 'GET'
-    })
-    .then(response => response.json())
-    .then(products => displayProducts(products))
-    .catch(error => console.error('Error:', error));
-  }
-
-  document.getElementById('nextPage').addEventListener('click', () => {
-    currentPage += 1;
-    if (currentSearchQuery) {
-      fetchSearchProducts(currentSearchQuery); // 검색 결과에 대한 페이지 처리
-    } else {
-      fetchProducts(); // 일반 상품 목록에 대한 페이지 처리
     }
-    document.getElementById('currentPage').innerText = currentPage;
-  });
 
-  document.getElementById('prevPage').addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage -= 1;
+
+    function fetchProducts() {
+      fetch(`${product_url}products?page=${currentPage - 1}&size=12`, {
+        method: 'GET'
+      })
+        .then(response => response.json())
+        .then(products => displayProducts(products))
+        .catch(error => console.error('Error:', error));
+    }
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+      currentPage += 1;
       if (currentSearchQuery) {
         fetchSearchProducts(currentSearchQuery); // 검색 결과에 대한 페이지 처리
       } else {
         fetchProducts(); // 일반 상품 목록에 대한 페이지 처리
       }
       document.getElementById('currentPage').innerText = currentPage;
-    }
-  });
-
-
-  function fetchProductImage(productId) {
-    // S3에서 이미지를 가져오는 요청을 보냅니다.
-    return fetch(product_url +  productId)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch product image');
-      }
-      return response.blob();
-    })
-    .then(blob => URL.createObjectURL(blob))
-    .catch(error => {
-      console.error('Error fetching product image:', error);
-      return null;
     });
-  }
+
+    document.getElementById('prevPage').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        if (currentSearchQuery) {
+          fetchSearchProducts(currentSearchQuery); // 검색 결과에 대한 페이지 처리
+        } else {
+          fetchProducts(); // 일반 상품 목록에 대한 페이지 처리
+        }
+        document.getElementById('currentPage').innerText = currentPage;
+      }
+    });
+
+
+    function fetchProductImage(productId) {
+      // S3에서 이미지를 가져오는 요청을 보냅니다.
+      return fetch(product_url + productId)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch product image');
+          }
+          return response.blob();
+        })
+        .then(blob => URL.createObjectURL(blob))
+        .catch(error => {
+          console.error('Error fetching product image:', error);
+          return null;
+        });
+    }
 
 
 
-</script>
-<script src="/js/common.js"></script>
+  </script>
+  <script src="/js/common.js"></script>
 </body>
+
 </html>

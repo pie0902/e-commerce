@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,19 +9,21 @@
   <title>주문 내역</title>
   <style>
     .orderDetail {
-      display: none; /* 기본적으로 숨김 */
+      display: none;
+      /* 기본적으로 숨김 */
     }
   </style>
 </head>
-<body>
-<div id="nav-container"></div>
-<main class="container">
-  <h2>주문 내역</h2>
-  <div id="orderList" class="section surface"></div>
-</main>
 
-<script src="/js/env.js"></script>
-<script>
+<body>
+  <div id="nav-container"></div>
+  <main class="container">
+    <h2>주문 내역</h2>
+    <div id="orderList" class="section surface"></div>
+  </main>
+
+  <script src="/js/env.js"></script>
+  <script>
   const order_url = API.ORDER;
 
 
@@ -181,7 +184,8 @@
     })
   .catch(error => alert('주문 결제 중 오류 발생: ' + error.message));
   }
-</script>
-<script src="js/common.js"></script>
+  </script>
+  <script src="js/common.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>쇼핑몰 헤더</title>
@@ -7,40 +8,42 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="/css/common.css">
 </head>
+
 <body>
-<header>
-  <div class="header-container">
-    <div class="logo">
-      <a href="/">
-        <div>
-          <img src="/images/logo.gif" alt="쇼핑몰 로고">
-          <h5>tentrilliondollars</h5>
-        </div>
-      </a>
-    </div>
-    <nav>
-      <ul class="menu">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-    </nav>
-<!--    <div class="search">-->
-<!--      <input type="text" id="searchBox" placeholder="상품 검색...">-->
-<!--      <button id="searchBtn">검색</button>-->
-<!--    </div>-->
-    <form id="searchForm" action="/index.html" method="get">
-      <input type="text" id="searchBox" name="search" placeholder="상품 검색...">
-      <button type="submit">검색</button>
-    </form>
-    <div class="icons">
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">
+          <div>
+            <img src="/images/logo.gif" alt="쇼핑몰 로고">
+            <h5>tentrilliondollars</h5>
+          </div>
+        </a>
+      </div>
+      <nav>
+        <ul class="menu">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+      <!--    <div class="search">-->
+      <!--      <input type="text" id="searchBox" placeholder="상품 검색...">-->
+      <!--      <button id="searchBtn">검색</button>-->
+      <!--    </div>-->
+      <form id="searchForm" action="/index.html" method="get">
+        <input type="text" id="searchBox" name="search" placeholder="상품 검색...">
+        <button type="submit">검색</button>
+      </form>
+      <div class="icons">
         <i id="basket" class="fas fa-shopping-cart"></i>
         <i id="myPage" class="fas fa-user"></i>
+      </div>
+      <div id="authButtons">
+        <!-- 로그인/회원가입 또는 마이페이지와 로그아웃 버튼이 동적으로 추가될 곳 -->
+      </div>
     </div>
-    <div id="authButtons">
-      <!-- 로그인/회원가입 또는 마이페이지와 로그아웃 버튼이 동적으로 추가될 곳 -->
-    </div>
-  </div>
-</header>
+  </header>
 </body>
+
 </html>

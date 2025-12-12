@@ -1,74 +1,91 @@
+/* cart.css */
 /* 전역 바디 스타일은 common.css를 사용합니다. */
 
 h2 {
-  color: #333;
+  margin-bottom: 24px;
 }
 
 #cartItems {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  background-color: var(--color-surface);
+  padding: 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 30px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
 }
 
 #cartItems .cartItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border);
+  gap: 20px;
 }
 
 #cartItems .cartItem:last-child {
   border-bottom: none;
 }
 
+#cartItems .cartItem img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: #f3f4f6;
+}
+
 #cartItems .itemName {
   flex-grow: 1;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 #cartItems .itemQuantity {
-  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 #cartItems .cartItem button {
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 5px;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  margin: 0;
 }
 
 #cartItems .cartItem button:hover {
-  background-color: #45a049;
+  background-color: var(--color-border);
 }
 
+/* 배송 주소 및 결제 */
 #addressSelect {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  max-width: 400px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 24px;
+  display: block;
 }
 
 #totalPrice {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: var(--color-primary);
+  text-align: right;
 }
 
 #placeOrderBtn {
-  background-color: #4CAF50;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#placeOrderBtn:hover {
-  background-color: #45a049;
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin-left: auto;
+  padding: 16px;
+  font-size: 1.1rem;
 }

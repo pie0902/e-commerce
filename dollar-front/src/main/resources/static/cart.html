@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,57 +8,58 @@
   <link rel="stylesheet" href="/css/cart.css">
   <title>장바구니</title>
 </head>
+
 <body>
-<div id="nav-container"></div>
-<main class="container">
-  <h2>장바구니</h2>
-  <div id="cartItems" class="section surface"></div>
-  <select id="addressSelect">
-    <option value="">배송 주소를 선택해주세요</option>
-  </select>
-  <p id="totalPrice">총 가격: 0원</p>
-  <button id="placeOrderBtn">주문하기</button>
-</main>
+  <div id="nav-container"></div>
+  <main class="container">
+    <h2>장바구니</h2>
+    <div id="cartItems" class="section surface"></div>
+    <select id="addressSelect">
+      <option value="">배송 주소를 선택해주세요</option>
+    </select>
+    <p id="totalPrice">총 가격: 0원</p>
+    <button id="placeOrderBtn">주문하기</button>
+  </main>
 
 
-<script src="/js/env.js"></script>
-<script>
-  const user_url =  API.USER;
-  const order_url = API.ORDER;
+  <script src="/js/env.js"></script>
+  <script>
+    const user_url = API.USER;
+    const order_url = API.ORDER;
 
-  document.addEventListener('DOMContentLoaded', function() {
-    displayCartItems();
+    document.addEventListener('DOMContentLoaded', function () {
+      displayCartItems();
 
-    fetchAddresses(); // 배송 주소 목록을 가져오는 함수 호출
+      fetchAddresses(); // 배송 주소 목록을 가져오는 함수 호출
 
-    document.getElementById('addressSelect').addEventListener('change', function() {
-      const selectedAddressId = this.value; // 선택된 주소의 ID를 가져옴
-      console.log(selectedAddressId); // 주소 ID를 콘솔에 출력하여 확인
+      document.getElementById('addressSelect').addEventListener('change', function () {
+        const selectedAddressId = this.value; // 선택된 주소의 ID를 가져옴
+        console.log(selectedAddressId); // 주소 ID를 콘솔에 출력하여 확인
+      });
+
+
+      document.getElementById('placeOrderBtn').addEventListener('click', function () {
+        const selectedAddressId = document.getElementById('addressSelect').value;
+        console.log(selectedAddressId);
+        if (checkTokenExists() && selectedAddressId) {
+          placeOrder(selectedAddressId); // 선택된 주소 ID를 주문 함수에 전달
+        } else {
+          alert('로그인과 배송 주소 선택이 필요합니다.');
+          // 필요에 따라 추가 조치
+        }
+      });
     });
 
 
-    document.getElementById('placeOrderBtn').addEventListener('click', function() {
-      const selectedAddressId = document.getElementById('addressSelect').value;
-      console.log(selectedAddressId);
-      if (checkTokenExists() && selectedAddressId) {
-        placeOrder(selectedAddressId); // 선택된 주소 ID를 주문 함수에 전달
-      } else {
-        alert('로그인과 배송 주소 선택이 필요합니다.');
-        // 필요에 따라 추가 조치
-      }
-    });
-  });
+    function displayCartItems() {
+      const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+      let total = 0;
+      const cartItemsContainer = document.getElementById('cartItems');
+      cartItemsContainer.innerHTML = '';
 
-
-  function displayCartItems() {
-    const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-    let total = 0;
-    const cartItemsContainer = document.getElementById('cartItems');
-    cartItemsContainer.innerHTML = '';
-
-    cartItems.forEach((item, index) => {
-      const itemElement = document.createElement('div');
-      itemElement.innerHTML = `
+      cartItems.forEach((item, index) => {
+        const itemElement = document.createElement('div');
+        itemElement.innerHTML = `
       <img src="${item.imageUrl}" alt="${item.name}" style="width: 100px; height: auto;">
       <p>${item.name}</p>
       <p>가격: ${item.price}원</p>
@@ -66,111 +68,112 @@
       <button onclick="updateQuantity(${index}, 1)">+</button>
       <p>합계: <span class="total">${item.price * item.quantity}</span>원</p>
     `;
-      cartItemsContainer.appendChild(itemElement);
+        cartItemsContainer.appendChild(itemElement);
 
-      total += item.price * item.quantity;
-    });
-
-    document.getElementById('totalPrice').textContent = `총 가격: ${total}원`;
-  }
-
-
-  function checkTokenExists() {
-    const cookies = document.cookie.split(';');
-    return cookies.some(cookie => cookie.trim().startsWith('Authorization='));
-  }
-
-  function placeOrder(addressId) {
-    const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-    // 장바구니 아이템을 basket 형태로 변환
-    let basket = {};
-    cartItems.forEach(item => {
-      basket[item.productId] = item.quantity;
-    });
-
-    // 서버에 전송할 요청 본문 구성
-    const orderRequest = {
-      basket: basket,
-      addressId: addressId
-    };
-
-    console.log(orderRequest);
-
-    // 서버에 주문 요청을 보내는 fetch API 호출
-    fetch(order_url + 'order', {
-      method: 'POST',
-      credentials: 'include', // 쿠키 포함
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(orderRequest) // 요청 본문에 주문 정보 포함
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('주문 처리 실패, 상품수량 확인 혹은 관리자에게 문의해주세요');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // 여기에 들어오면
-
-      alert('주문이 생성되었습니다. 주문 내역에서 결제를 부탁드립니다.\n\n5분 내에 결제를 안 할 시에 주문이 취소됩니다.');
-      // 주문 완료 후 로컬 스토리지에서 장바구니 정보 삭제
-      sessionStorage.removeItem('cart');
-      // 주문 완료 페이지나 메인 페이지로 리다이렉션
-      window.location.href = 'orderComplete.html'; // 이 부분은 적절한 주문 완료 페이지로 변경해주세요.
-    })
-    .catch(error => {
-      console.error('Order error:', error);
-      alert('주문 처리 중 오류가 발생했습니다.');
-    });
-  }
-
-
-  function updateQuantity(index, change) {
-    const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
-    if (index >= 0 && index < cartItems.length) {
-      // 수량 변경
-      cartItems[index].quantity += change;
-
-      // 수량이 1 미만이 되면 해당 상품 삭제
-      if (cartItems[index].quantity < 1) {
-        cartItems.splice(index, 1);
-      }
-
-      // 변경된 장바구니 정보를 로컬 스토리지에 저장
-      sessionStorage.setItem('cart', JSON.stringify(cartItems));
-
-      // 장바구니 UI를 업데이트
-      displayCartItems();
-    }
-  }
-
-  function fetchAddresses() {
-    // 주소 목록을 가져오는 서버의 엔드포인트 예시: '/api/addresses'
-    fetch(user_url + 'users/address', {
-      method: 'GET',
-      credentials: 'include', // 쿠키 포함
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(addresses => {
-      const selectElement = document.getElementById('addressSelect');
-      addresses.forEach(address => {
-        // 주소 객체에서 도시, 읍/면/동, 도 정보를 조합하여 전체 주소를 생성
-        const fullAddress = `${address.city} ${address.village} ${address.province}`;
-        console.log(fullAddress);
-        const optionElement = document.createElement('option');
-        optionElement.value = address.id;
-        optionElement.textContent = fullAddress; // 전체 주소를 옵션의 텍스트로 설정
-        selectElement.appendChild(optionElement);
+        total += item.price * item.quantity;
       });
-    })
-    .catch(error => console.error('Error fetching addresses:', error));
-  }
-</script>
-<script src="/js/common.js"></script>
+
+      document.getElementById('totalPrice').textContent = `총 가격: ${total}원`;
+    }
+
+
+    function checkTokenExists() {
+      const cookies = document.cookie.split(';');
+      return cookies.some(cookie => cookie.trim().startsWith('Authorization='));
+    }
+
+    function placeOrder(addressId) {
+      const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+      // 장바구니 아이템을 basket 형태로 변환
+      let basket = {};
+      cartItems.forEach(item => {
+        basket[item.productId] = item.quantity;
+      });
+
+      // 서버에 전송할 요청 본문 구성
+      const orderRequest = {
+        basket: basket,
+        addressId: addressId
+      };
+
+      console.log(orderRequest);
+
+      // 서버에 주문 요청을 보내는 fetch API 호출
+      fetch(order_url + 'order', {
+        method: 'POST',
+        credentials: 'include', // 쿠키 포함
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderRequest) // 요청 본문에 주문 정보 포함
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('주문 처리 실패, 상품수량 확인 혹은 관리자에게 문의해주세요');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // 여기에 들어오면
+
+          alert('주문이 생성되었습니다. 주문 내역에서 결제를 부탁드립니다.\n\n5분 내에 결제를 안 할 시에 주문이 취소됩니다.');
+          // 주문 완료 후 로컬 스토리지에서 장바구니 정보 삭제
+          sessionStorage.removeItem('cart');
+          // 주문 완료 페이지나 메인 페이지로 리다이렉션
+          window.location.href = 'orderComplete.html'; // 이 부분은 적절한 주문 완료 페이지로 변경해주세요.
+        })
+        .catch(error => {
+          console.error('Order error:', error);
+          alert('주문 처리 중 오류가 발생했습니다.');
+        });
+    }
+
+
+    function updateQuantity(index, change) {
+      const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+      if (index >= 0 && index < cartItems.length) {
+        // 수량 변경
+        cartItems[index].quantity += change;
+
+        // 수량이 1 미만이 되면 해당 상품 삭제
+        if (cartItems[index].quantity < 1) {
+          cartItems.splice(index, 1);
+        }
+
+        // 변경된 장바구니 정보를 로컬 스토리지에 저장
+        sessionStorage.setItem('cart', JSON.stringify(cartItems));
+
+        // 장바구니 UI를 업데이트
+        displayCartItems();
+      }
+    }
+
+    function fetchAddresses() {
+      // 주소 목록을 가져오는 서버의 엔드포인트 예시: '/api/addresses'
+      fetch(user_url + 'users/address', {
+        method: 'GET',
+        credentials: 'include', // 쿠키 포함
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(addresses => {
+          const selectElement = document.getElementById('addressSelect');
+          addresses.forEach(address => {
+            // 주소 객체에서 도시, 읍/면/동, 도 정보를 조합하여 전체 주소를 생성
+            const fullAddress = `${address.city} ${address.village} ${address.province}`;
+            console.log(fullAddress);
+            const optionElement = document.createElement('option');
+            optionElement.value = address.id;
+            optionElement.textContent = fullAddress; // 전체 주소를 옵션의 텍스트로 설정
+            selectElement.appendChild(optionElement);
+          });
+        })
+        .catch(error => console.error('Error fetching addresses:', error));
+    }
+  </script>
+  <script src="/js/common.js"></script>
 </body>
+
 </html>

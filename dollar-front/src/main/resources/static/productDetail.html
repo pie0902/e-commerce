@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,310 +8,312 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/productDetail.css">
 </head>
+
 <body>
-<div id="nav-container"></div>
-<main class="container">
-<div id="productDetail" class="section surface">
-  <div class="productDetailImage">
-    <img id="productImage" src="/images/TIL.jpeg" alt="상품 이미지">
-      <!--<img id="productImage" src="" alt="상품 이미지" style="width: 300px;">-->
-    </div>
+  <div id="nav-container"></div>
+  <main class="container">
+    <div id="productDetail" class="section surface">
+      <div class="productDetailImage">
+        <img id="productImage" src="/images/TIL.jpeg" alt="상품 이미지">
+        <!--<img id="productImage" src="" alt="상품 이미지" style="width: 300px;">-->
+      </div>
 
-    <div class="productDetailItem">
-      <h2 id="productName"></h2>
-      <p id="productPrice"></p>
-      <p id="productDescription"></p>
-      <p id="productStock"></p>
-      <p id="adminName"></p>
+      <div class="productDetailItem">
+        <h2 id="productName"></h2>
+        <p id="productPrice"></p>
+        <p id="productDescription"></p>
+        <p id="productStock"></p>
+        <p id="adminName"></p>
+      </div>
     </div>
-  </div>
-  <div class="productDetail-wrap mt-4">
-    <div class="productDetail-addCart">
-      <label for="productQuantity">수량:</label>
-      <input type="number" id="productQuantity" value="1" min="1" style="width: 50px;">
-      <button id="addToCartBtn">장바구니에 담기</button>
-    </div>
+    <div class="productDetail-wrap mt-4">
+      <div class="productDetail-addCart">
+        <label for="productQuantity">수량:</label>
+        <input type="number" id="productQuantity" value="1" min="1" style="width: 50px;">
+        <button id="addToCartBtn">장바구니에 담기</button>
+      </div>
 
-    <div id="reviewSection">
-      <h2>상품 리뷰</h2>
+      <div id="reviewSection">
+        <h2>상품 리뷰</h2>
 
-      <div class="reviewForm">
-        <form id="reviewForm">
-          <div class="formGroup">
-            <label for="reviewContent">리뷰 내용:</label>
-            <textarea id="reviewContent" rows="4" required></textarea>
-          </div>
-          <div class="formGroup">
-            <label for="reviewScore">평점:</label>
-            <select id="reviewScore" required>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-          </div>
-          <button type="submit">리뷰 작성</button>
+        <div class="reviewForm">
+          <form id="reviewForm">
+            <div class="formGroup">
+              <label for="reviewContent">리뷰 내용:</label>
+              <textarea id="reviewContent" rows="4" required></textarea>
+            </div>
+            <div class="formGroup">
+              <label for="reviewScore">평점:</label>
+              <select id="reviewScore" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <button type="submit">리뷰 작성</button>
+          </form>
+        </div>
+        <ul id="reviewList"></ul>
+      </div>
+      <!-- 리뷰 업데이트 폼 (초기에는 숨김) -->
+      <div id="updateReviewForm" style="display: none;">
+        <h3>리뷰 수정</h3>
+        <form>
+          <label for="updateContent">리뷰 내용:</label>
+          <textarea id="updateContent" rows="4" required></textarea>
+          <label for="updateScore">평점:</label>
+          <select id="updateScore" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+          <button type="button" id="updateSubmit">수정 완료</button>
         </form>
       </div>
-      <ul id="reviewList"></ul>
     </div>
-    <!-- 리뷰 업데이트 폼 (초기에는 숨김) -->
-  <div id="updateReviewForm" style="display: none;">
-    <h3>리뷰 수정</h3>
-    <form>
-      <label for="updateContent">리뷰 내용:</label>
-      <textarea id="updateContent" rows="4" required></textarea>
-      <label for="updateScore">평점:</label>
-      <select id="updateScore" required>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <button type="button" id="updateSubmit">수정 완료</button>
-    </form>
-  </div>
-  </div>
-</div>
-</main>
-<script src="/js/env.js"></script>
-<script>
-  const product_url = API.PRODUCT;
-  const review_url = API.REVIEW;
-  document.getElementById('updateSubmit').addEventListener('click', submitUpdateReview);
+    </div>
+  </main>
+  <script src="/js/env.js"></script>
+  <script>
+    const product_url = API.PRODUCT;
+    const review_url = API.REVIEW;
+    document.getElementById('updateSubmit').addEventListener('click', submitUpdateReview);
 
 
-  let currentProduct = {}; // 전역 변수로 현재 상품 정보 저장
-  let productNumber;
-  document.addEventListener('DOMContentLoaded', function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('productId');
-    fetchProductDetail(productId).then(product => {
-      productNumber = productId;
-      currentProduct = product; // 상품 정보를 전역 변수에 저장
-      fetchReviews(productId); // 상품 리뷰를 가져옴
-    });
-
-    document.getElementById('addToCartBtn').addEventListener('click', function () {
-      const quantity = parseInt(document.getElementById('productQuantity').value, 10);
-      addToCart(currentProduct, quantity);
-    });
-  });
-
-  function fetchProductDetail(productId) {
-    return fetch(product_url + `products/${productId}`) // 상품 상세 정보 조회 API 엔드포인트
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(product => {
-      console.log(product);
-
-      document.getElementById('productName').textContent = `상품명: ${product.name}`;
-      document.getElementById('productImage').src = `${product.imageUrl}`;
-      document.getElementById('productPrice').textContent = `가격: ${product.price}원`;
-      document.getElementById('productDescription').textContent = `설명: ${product.description}`;
-      document.getElementById('productStock').textContent = `재고: ${product.stock}개`;
-      document.getElementById('adminName').textContent = `관리자: ${product.adminname}`;
-      return product;
-    })
-    .catch(error => {
-      console.error('Error fetching product details:', error);
-    });
-  }
-  document.getElementById('reviewForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const reviewContent = document.getElementById('reviewContent').value;
-    const reviewScore = parseInt(document.getElementById('reviewScore').value, 10);
-    //const reviewImageFile = document.getElementById('reviewImage').files[0];
-    const reviewData = {
-      content: reviewContent,
-      score: reviewScore,
-      //image: reviewImageFile
-    };
-
-    const token = getTokenFromCookie();
-    fetch(review_url + `products/${productNumber}/reviews`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // 토큰을 헤더에 포함
-      },
-      body: JSON.stringify(reviewData)
-    })
-    .then(response => {
-      if (response.ok) {
-        alert('리뷰가 성공적으로 등록되었습니다.');
-        fetchReviews(productNumber); // 리뷰 목록을 다시 불러옴
-        document.getElementById('reviewForm').reset(); // 폼 초기화
-      } else {
-        alert('리뷰 등록에 실패했습니다.');
-      }
-    })
-    .catch(error => {
-      console.error('Error submitting review:', error);
-      alert('리뷰 등록 중 오류가 발생했습니다.');
-    });
-  });
-  function fetchReviews(productId) {
-    fetch(review_url + `products/${productId}/reviews`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(reviews => {
-      const reviewList = document.getElementById('reviewList');
-      reviewList.innerHTML = ''; // 이전에 추가된 리뷰를 모두 지움
-
-      let totalScore = 0; // 전체 평점의 합을 저장할 변수
-      let averageScore = 0; // 평균 평점을 계산할 변수
-
-      reviews.forEach(review => {
-        const listItem = document.createElement('li');
-        // 리뷰 항목을 생성하고 내용을 추가합니다.
-        const contentDiv = document.createElement('div');
-        //const photoImg = document.createElement('img');
-        const scoreSpan = document.createElement('span');
-        const contentSpan = document.createElement('span');
-        // 업데이트 버튼
-        const updateButton = document.createElement('button');
-        updateButton.textContent = '수정';
-        updateButton.addEventListener('click', () => showUpdateForm(review.id, review.userId, productId, review));
-        // 삭제 버튼
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = '삭제';
-        deleteButton.addEventListener('click', () => deleteReview(review.id, review.userId, productId));
-
-        //photoImg.src = review.imageUrl;
-        //photoImg.alt = '리뷰 사진';
-        //photoImg.style.width = '100px'; // 이미지 크기 조정
-        //contentDiv.appendChild(photoImg);
-        //contentDiv.appendChild(document.createElement('br')); // 줄바꿈
-        scoreSpan.textContent = `점수: ${review.score}`;
-        totalScore += review.score; // 리뷰의 점수를 더합니다.
-        contentDiv.appendChild(scoreSpan);
-        contentDiv.appendChild(document.createElement('br')); // 줄바꿈
-
-        contentSpan.textContent = review.content;
-        contentDiv.appendChild(contentSpan);
-
-        contentDiv.appendChild(deleteButton);
-        contentDiv.appendChild(updateButton);
-
-        listItem.appendChild(contentDiv);
-        reviewList.appendChild(listItem);
+    let currentProduct = {}; // 전역 변수로 현재 상품 정보 저장
+    let productNumber;
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('productId');
+      fetchProductDetail(productId).then(product => {
+        productNumber = productId;
+        currentProduct = product; // 상품 정보를 전역 변수에 저장
+        fetchReviews(productId); // 상품 리뷰를 가져옴
       });
 
-      // 평균 평점 계산
-      if (reviews.length > 0) {
-        averageScore = totalScore / reviews.length;
-        const averageScoreP = document.createElement('p');
-        averageScoreP.textContent = `평균 평점: ${averageScore.toFixed(2)}`; // 소수점 둘째 자리까지 표시
-        reviewList.parentNode.insertBefore(averageScoreP, reviewList); // 리뷰 목록 앞에 추가
-      }
-    })
-
-    .catch(error => {
-      console.error('Error fetching reviews:', error);
-    });
-  }
-
-  function addToCart(product, quantity) {
-    let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-    const productIndex = cart.findIndex(item => item.productId === product.id);
-
-    if (productIndex !== -1) {
-      cart[productIndex].quantity += quantity;
-    } else {
-      cart.push({
-        name: product.name,
-        photo: product.imageUrl,
-        price: product.price,
-        productId: product.id,
-        quantity: quantity,
+      document.getElementById('addToCartBtn').addEventListener('click', function () {
+        const quantity = parseInt(document.getElementById('productQuantity').value, 10);
+        addToCart(currentProduct, quantity);
       });
+    });
+
+    function fetchProductDetail(productId) {
+      return fetch(product_url + `products/${productId}`) // 상품 상세 정보 조회 API 엔드포인트
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(product => {
+          console.log(product);
+
+          document.getElementById('productName').textContent = `상품명: ${product.name}`;
+          document.getElementById('productImage').src = `${product.imageUrl}`;
+          document.getElementById('productPrice').textContent = `가격: ${product.price}원`;
+          document.getElementById('productDescription').textContent = `설명: ${product.description}`;
+          document.getElementById('productStock').textContent = `재고: ${product.stock}개`;
+          document.getElementById('adminName').textContent = `관리자: ${product.adminname}`;
+          return product;
+        })
+        .catch(error => {
+          console.error('Error fetching product details:', error);
+        });
+    }
+    document.getElementById('reviewForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const reviewContent = document.getElementById('reviewContent').value;
+      const reviewScore = parseInt(document.getElementById('reviewScore').value, 10);
+      //const reviewImageFile = document.getElementById('reviewImage').files[0];
+      const reviewData = {
+        content: reviewContent,
+        score: reviewScore,
+        //image: reviewImageFile
+      };
+
+      const token = getTokenFromCookie();
+      fetch(review_url + `products/${productNumber}/reviews`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // 토큰을 헤더에 포함
+        },
+        body: JSON.stringify(reviewData)
+      })
+        .then(response => {
+          if (response.ok) {
+            alert('리뷰가 성공적으로 등록되었습니다.');
+            fetchReviews(productNumber); // 리뷰 목록을 다시 불러옴
+            document.getElementById('reviewForm').reset(); // 폼 초기화
+          } else {
+            alert('리뷰 등록에 실패했습니다.');
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting review:', error);
+          alert('리뷰 등록 중 오류가 발생했습니다.');
+        });
+    });
+    function fetchReviews(productId) {
+      fetch(review_url + `products/${productId}/reviews`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(reviews => {
+          const reviewList = document.getElementById('reviewList');
+          reviewList.innerHTML = ''; // 이전에 추가된 리뷰를 모두 지움
+
+          let totalScore = 0; // 전체 평점의 합을 저장할 변수
+          let averageScore = 0; // 평균 평점을 계산할 변수
+
+          reviews.forEach(review => {
+            const listItem = document.createElement('li');
+            // 리뷰 항목을 생성하고 내용을 추가합니다.
+            const contentDiv = document.createElement('div');
+            //const photoImg = document.createElement('img');
+            const scoreSpan = document.createElement('span');
+            const contentSpan = document.createElement('span');
+            // 업데이트 버튼
+            const updateButton = document.createElement('button');
+            updateButton.textContent = '수정';
+            updateButton.addEventListener('click', () => showUpdateForm(review.id, review.userId, productId, review));
+            // 삭제 버튼
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '삭제';
+            deleteButton.addEventListener('click', () => deleteReview(review.id, review.userId, productId));
+
+            //photoImg.src = review.imageUrl;
+            //photoImg.alt = '리뷰 사진';
+            //photoImg.style.width = '100px'; // 이미지 크기 조정
+            //contentDiv.appendChild(photoImg);
+            //contentDiv.appendChild(document.createElement('br')); // 줄바꿈
+            scoreSpan.textContent = `점수: ${review.score}`;
+            totalScore += review.score; // 리뷰의 점수를 더합니다.
+            contentDiv.appendChild(scoreSpan);
+            contentDiv.appendChild(document.createElement('br')); // 줄바꿈
+
+            contentSpan.textContent = review.content;
+            contentDiv.appendChild(contentSpan);
+
+            contentDiv.appendChild(deleteButton);
+            contentDiv.appendChild(updateButton);
+
+            listItem.appendChild(contentDiv);
+            reviewList.appendChild(listItem);
+          });
+
+          // 평균 평점 계산
+          if (reviews.length > 0) {
+            averageScore = totalScore / reviews.length;
+            const averageScoreP = document.createElement('p');
+            averageScoreP.textContent = `평균 평점: ${averageScore.toFixed(2)}`; // 소수점 둘째 자리까지 표시
+            reviewList.parentNode.insertBefore(averageScoreP, reviewList); // 리뷰 목록 앞에 추가
+          }
+        })
+
+        .catch(error => {
+          console.error('Error fetching reviews:', error);
+        });
     }
 
-    sessionStorage.setItem('cart', JSON.stringify(cart));
-    alert('장바구니에 상품이 추가되었습니다!');
-  }
-  //리뷰 삭제 메서드
-  function deleteReview(reviewId, userId, productId) {
-    fetch(review_url + `products/${productId}/reviews/${reviewId}`, {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then(response => {
-      if (response.ok) {
-        alert('리뷰가 성공적으로 삭제되었습니다.');
-        location.reload(); // 페이지를 새로 고침
+    function addToCart(product, quantity) {
+      let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+      const productIndex = cart.findIndex(item => item.productId === product.id);
+
+      if (productIndex !== -1) {
+        cart[productIndex].quantity += quantity;
       } else {
-        alert('리뷰 삭제에 실패했습니다.');
+        cart.push({
+          name: product.name,
+          photo: product.imageUrl,
+          price: product.price,
+          productId: product.id,
+          quantity: quantity,
+        });
       }
-    }).catch(error => {
-      console.error('Error deleting review:', error);
-      alert('리뷰 삭제 중 오류가 발생했습니다.');
-    });
-  }
-  function showUpdateForm(reviewId, userId, productId, review) {
-    // 폼 요소에 접근
-    const updateForm = document.getElementById('updateReviewForm');
-    const updateContent = document.getElementById('updateContent');
-    const updateScore = document.getElementById('updateScore');
 
-    // 현재 리뷰 내용과 평점을 폼 필드에 채워넣기
-    updateContent.value = review.content;
-    updateScore.value = review.score;
+      sessionStorage.setItem('cart', JSON.stringify(cart));
+      alert('장바구니에 상품이 추가되었습니다!');
+    }
+    //리뷰 삭제 메서드
+    function deleteReview(reviewId, userId, productId) {
+      fetch(review_url + `products/${productId}/reviews/${reviewId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }).then(response => {
+        if (response.ok) {
+          alert('리뷰가 성공적으로 삭제되었습니다.');
+          location.reload(); // 페이지를 새로 고침
+        } else {
+          alert('리뷰 삭제에 실패했습니다.');
+        }
+      }).catch(error => {
+        console.error('Error deleting review:', error);
+        alert('리뷰 삭제 중 오류가 발생했습니다.');
+      });
+    }
+    function showUpdateForm(reviewId, userId, productId, review) {
+      // 폼 요소에 접근
+      const updateForm = document.getElementById('updateReviewForm');
+      const updateContent = document.getElementById('updateContent');
+      const updateScore = document.getElementById('updateScore');
 
-    // 업데이트 폼에 현재 리뷰 ID와 제품 ID를 저장해두기 (후에 수정 요청 시 사용)
-    updateForm.setAttribute('data-review-id', reviewId);
-    updateForm.setAttribute('data-product-id', productId);
+      // 현재 리뷰 내용과 평점을 폼 필드에 채워넣기
+      updateContent.value = review.content;
+      updateScore.value = review.score;
 
-    // 폼 보이기
-    updateForm.style.display = 'block';
-  }
-  function submitUpdateReview() {
-    const updateForm = document.getElementById('updateReviewForm');
-    const reviewId = updateForm.getAttribute('data-review-id');
-    const productId = updateForm.getAttribute('data-product-id');
-    const content = document.getElementById('updateContent').value;
-    const score = document.getElementById('updateScore').value;
+      // 업데이트 폼에 현재 리뷰 ID와 제품 ID를 저장해두기 (후에 수정 요청 시 사용)
+      updateForm.setAttribute('data-review-id', reviewId);
+      updateForm.setAttribute('data-product-id', productId);
 
-    // API 엔드포인트로 PUT 요청 보내기
-    fetch(review_url + `products/${productId}/reviews/${reviewId}`, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ content: content, score: score })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok'); // 네트워크 응답 오류 시 예외 발생
-      }
-    })
-    .then(()=> {
-      alert('리뷰가 성공적으로 업데이트되었습니다.');
-      location.reload(); // 페이지를 새로 고침
-    })
-    .catch(error => {
-      console.error('Error updating review:', error);
-      alert('리뷰 수정 중 오류가 발생했습니다. 리뷰 수정은 작성자만 가능합니다.'); // 오류 처리
-    });
-    // 폼 숨기기
-    updateForm.style.display = 'none';
-  }
-</script>
-<script src="/js/common.js"></script>
+      // 폼 보이기
+      updateForm.style.display = 'block';
+    }
+    function submitUpdateReview() {
+      const updateForm = document.getElementById('updateReviewForm');
+      const reviewId = updateForm.getAttribute('data-review-id');
+      const productId = updateForm.getAttribute('data-product-id');
+      const content = document.getElementById('updateContent').value;
+      const score = document.getElementById('updateScore').value;
+
+      // API 엔드포인트로 PUT 요청 보내기
+      fetch(review_url + `products/${productId}/reviews/${reviewId}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: content, score: score })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok'); // 네트워크 응답 오류 시 예외 발생
+          }
+        })
+        .then(() => {
+          alert('리뷰가 성공적으로 업데이트되었습니다.');
+          location.reload(); // 페이지를 새로 고침
+        })
+        .catch(error => {
+          console.error('Error updating review:', error);
+          alert('리뷰 수정 중 오류가 발생했습니다. 리뷰 수정은 작성자만 가능합니다.'); // 오류 처리
+        });
+      // 폼 숨기기
+      updateForm.style.display = 'none';
+    }
+  </script>
+  <script src="/js/common.js"></script>
 </body>
+
 </html>

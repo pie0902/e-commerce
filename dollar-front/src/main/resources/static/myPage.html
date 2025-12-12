@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,322 +8,324 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="css/myPage.css">
 </head>
+
 <body>
-<div id="nav-container"></div>
-<main class="container">
-<h1>프로필 조회</h1>
-<div class="section surface">
-  <label for="email">이메일 :</label>
-  <p id="email"></p>
-</div>
-<div>
-  <label for="username">유저 이름 :</label>
-  <p id="username"></p>
-  <button class="usernameChangeBtn" onclick="changeUsername()">유저이름 변경</button>
-</div>
-<div>
-  <label for="password">패스워드 :</label>
-  <p id="password">******</p>
-  <button class="userPasswordChangeBtn" onclick="changePassword()">패스워드 변경</button>
-</div>
-<div>
-  <label for="role">역할 :</label>
-  <p id="role"></p>
- </div>
- <hr>
- <div class="myPageSubmitArea">
- <div>
-  <div id="addressList">주소 목록이 여기에 표시됩니다.</div>
-  <button onclick="addAddress()">주소 추가</button>
- </div>
- <button onclick="withdraw()">회원 탈퇴</button>
- </div>
-</main>
-<script src="/js/env.js"></script>
-<script>
+  <div id="nav-container"></div>
+  <main class="container">
+    <h1>프로필 조회</h1>
+    <div class="section surface">
+      <label for="email">이메일 :</label>
+      <p id="email"></p>
+    </div>
+    <div>
+      <label for="username">유저 이름 :</label>
+      <p id="username"></p>
+      <button class="usernameChangeBtn" onclick="changeUsername()">유저이름 변경</button>
+    </div>
+    <div>
+      <label for="password">패스워드 :</label>
+      <p id="password">******</p>
+      <button class="userPasswordChangeBtn" onclick="changePassword()">패스워드 변경</button>
+    </div>
+    <div>
+      <label for="role">역할 :</label>
+      <p id="role"></p>
+    </div>
+    <hr>
+    <div class="myPageSubmitArea">
+      <div>
+        <div id="addressList">주소 목록이 여기에 표시됩니다.</div>
+        <button onclick="addAddress()">주소 추가</button>
+      </div>
+      <button onclick="withdraw()">회원 탈퇴</button>
+    </div>
+  </main>
+  <script src="/js/env.js"></script>
+  <script>
 
-  const user_url =  API.USER;
+    const user_url = API.USER;
 
-  function withdraw() {
-    const confirmWithdraw = confirm('정말 회원 탈퇴하시겠습니까?');
-    if (confirmWithdraw) {
-      const password = prompt('패스워드를 입력하세요:');
-      if (password) {
-        const confirmPassword = prompt('패스워드를 다시 입력하세요:');
-        if (confirmPassword === password) {
-          fetch(user_url + 'users/withdraw', {
-            method: 'DELETE',
-            credentials: 'include', // 쿠키 포함
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              password: password,
-              passwordCheck: confirmPassword
+    function withdraw() {
+      const confirmWithdraw = confirm('정말 회원 탈퇴하시겠습니까?');
+      if (confirmWithdraw) {
+        const password = prompt('패스워드를 입력하세요:');
+        if (password) {
+          const confirmPassword = prompt('패스워드를 다시 입력하세요:');
+          if (confirmPassword === password) {
+            fetch(user_url + 'users/withdraw', {
+              method: 'DELETE',
+              credentials: 'include', // 쿠키 포함
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                password: password,
+                passwordCheck: confirmPassword
+              })
             })
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('회원 탈퇴에 실패했습니다.');
-            }
-            alert('회원 탈퇴되었습니다.');
-            document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            window.location.href = 'loginSignup.html';
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-        } else {
-          alert('패스워드가 일치하지 않습니다. 다시 시도해주세요.');
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('회원 탈퇴에 실패했습니다.');
+                }
+                alert('회원 탈퇴되었습니다.');
+                document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                window.location.href = 'loginSignup.html';
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+          } else {
+            alert('패스워드가 일치하지 않습니다. 다시 시도해주세요.');
+          }
         }
       }
     }
-  }
 
 
-  function fetchProfile() {
-    fetch(user_url + 'users/profile', {
-      method: 'GET',
-      credentials: 'include', // 쿠키 포함
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('네트워크 응답이 실패했습니다.');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // 받아온 프로필 데이터를 화면에 표시합니다.
-      document.getElementById('email').textContent = data.email;
-      document.getElementById('username').textContent = data.username;
-      document.getElementById('role').textContent = data.role;
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    function fetchProfile() {
+      fetch(user_url + 'users/profile', {
+        method: 'GET',
+        credentials: 'include', // 쿠키 포함
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('네트워크 응답이 실패했습니다.');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // 받아온 프로필 데이터를 화면에 표시합니다.
+          document.getElementById('email').textContent = data.email;
+          document.getElementById('username').textContent = data.username;
+          document.getElementById('role').textContent = data.role;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
 
-    fetch(user_url + 'users/address', {
-      method: 'GET',
-      credentials: 'include', // 쿠키 포함
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('주소 목록을 가져오는데 실패했습니다.');
-      }
-      return response.json();
-    })
-    .then(data => {
-      const addressDiv = document.getElementById('addressList');
-      addressDiv.innerHTML = ''; // 이전 주소를 모두 지웁니다.
-      data.forEach(address => {
-        // 주소 정보를 받아와서 각 부분을 화면에 표시합니다.
-        const city = address.city;
-        const village = address.village;
-        const province = address.province;
-
-        // 각 부분을 표시할 <p> 요소를 생성합니다.
-        const cityPara = document.createElement('p');
-        cityPara.textContent = '도시: ' + city;
-
-        const villagePara = document.createElement('p');
-        villagePara.textContent = '마을: ' + village;
-
-        const provincePara = document.createElement('p');
-        provincePara.textContent = '도: ' + province;
-
-        // 수정 버튼을 생성합니다.
-        const editButton = document.createElement('button');
-        editButton.textContent = '수정';
-        editButton.onclick = function() {
-          editAddress(address);
-        };
-
-        // 삭제 버튼을 생성합니다.
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = '삭제';
-        deleteButton.onclick = function() {
-          deleteAddress(address);
-        };
-
-        // 주소와 버튼을 포함한 <div> 요소를 생성합니다.
-        const addressContainer = document.createElement('div');
-        const hrElement = document.createElement('hr');
-
-        addressContainer.appendChild(cityPara);
-        addressContainer.appendChild(villagePara);
-        addressContainer.appendChild(provincePara);
-        addressContainer.appendChild(editButton);
-        addressContainer.appendChild(deleteButton);
-
-        // 주소와 버튼이 포함된 <div> 요소를 주소 목록 <div>에 추가합니다.
-        addressDiv.appendChild(addressContainer);
-        addressDiv.appendChild(hrElement);
-
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-
-  }
-
-  function addAddress() {
-    const newCity = prompt('새로운 도시를 입력하세요:');
-    const newVillage = prompt('새로운 마을을 입력하세요:');
-    const newProvince = prompt('새로운 도를 입력하세요:');
-    if (newCity && newVillage && newProvince) {
       fetch(user_url + 'users/address', {
-        method: 'POST',
+        method: 'GET',
         credentials: 'include', // 쿠키 포함
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          city: newCity,
-          village: newVillage,
-          province: newProvince
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('주소 목록을 가져오는데 실패했습니다.');
+          }
+          return response.json();
         })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('주소 추가에 실패했습니다.');
-        }
-        alert('주소가 성공적으로 추가되었습니다.');
-        // 주소 목록을 다시 불러와서 업데이트합니다.
-        fetchProfile();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-  }
+        .then(data => {
+          const addressDiv = document.getElementById('addressList');
+          addressDiv.innerHTML = ''; // 이전 주소를 모두 지웁니다.
+          data.forEach(address => {
+            // 주소 정보를 받아와서 각 부분을 화면에 표시합니다.
+            const city = address.city;
+            const village = address.village;
+            const province = address.province;
 
-  function editAddress(address) {
-    const newCity = prompt('새로운 도시를 입력하세요:');
-    const newVillage = prompt('새로운 마을을 입력하세요:');
-    const newProvince = prompt('새로운 도를 입력하세요:');
-    if (newCity && newVillage && newProvince) {
-      fetch(user_url + 'users/address/' + address.id, {
-        method: 'PUT',
-        credentials: 'include', // 쿠키 포함
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          city: newCity,
-          village: newVillage,
-          province: newProvince
+            // 각 부분을 표시할 <p> 요소를 생성합니다.
+            const cityPara = document.createElement('p');
+            cityPara.textContent = '도시: ' + city;
+
+            const villagePara = document.createElement('p');
+            villagePara.textContent = '마을: ' + village;
+
+            const provincePara = document.createElement('p');
+            provincePara.textContent = '도: ' + province;
+
+            // 수정 버튼을 생성합니다.
+            const editButton = document.createElement('button');
+            editButton.textContent = '수정';
+            editButton.onclick = function () {
+              editAddress(address);
+            };
+
+            // 삭제 버튼을 생성합니다.
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '삭제';
+            deleteButton.onclick = function () {
+              deleteAddress(address);
+            };
+
+            // 주소와 버튼을 포함한 <div> 요소를 생성합니다.
+            const addressContainer = document.createElement('div');
+            const hrElement = document.createElement('hr');
+
+            addressContainer.appendChild(cityPara);
+            addressContainer.appendChild(villagePara);
+            addressContainer.appendChild(provincePara);
+            addressContainer.appendChild(editButton);
+            addressContainer.appendChild(deleteButton);
+
+            // 주소와 버튼이 포함된 <div> 요소를 주소 목록 <div>에 추가합니다.
+            addressDiv.appendChild(addressContainer);
+            addressDiv.appendChild(hrElement);
+
+          });
         })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('주소 수정에 실패했습니다.');
-        }
-        alert('주소가 성공적으로 수정되었습니다.');
-        // 주소 목록을 다시 불러와서 업데이트합니다.
-        fetchProfile();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-  }
+        .catch(error => {
+          console.error('Error:', error);
+        });
 
-  function deleteAddress(address) {
-    const confirmDelete = confirm(`주소 '${address}'를 삭제하시겠습니까?`);
-    if (confirmDelete) {
-      fetch(user_url + 'users/address/' + address.id, {
-        method: 'DELETE',
-        credentials: 'include', // 쿠키 포함
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('주소 삭제에 실패했습니다.');
-        }
-        alert('주소가 성공적으로 삭제되었습니다.');
-        // 주소 목록을 다시 불러와서 업데이트합니다.
-        fetchProfile();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
     }
-  }
 
-  function changeUsername() {
-    const newUsername = prompt('새로운 유저이름을 입력하세요:');
-    if (newUsername) {
-      fetch(user_url + 'users/username', {
-        method: 'PUT',
-        credentials: 'include', // 쿠키 포함
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username: newUsername })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('유저이름 변경에 실패했습니다.');
-        }
-        alert('유저이름이 성공적으로 변경되었습니다.');
-        // 변경된 유저이름을 화면에 업데이트합니다.
-        document.getElementById('username').textContent = newUsername;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-  }
-
-  function changePassword() {
-    const currentPassword = prompt('기존 패스워드를 입력하세요:');
-    if (currentPassword) {
-      const newPassword = prompt('새로운 패스워드를 입력하세요:');
-      if (newPassword) {
-        const confirmPassword = prompt('새로운 패스워드를 다시 입력하세요:');
-        if (newPassword === confirmPassword) {
-          fetch(user_url + 'users/password', {
-            method: 'PUT',
-            credentials: 'include', // 쿠키 포함
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              password: currentPassword,
-              changePassword: newPassword,
-              changePasswordCheck: confirmPassword
-            })
+    function addAddress() {
+      const newCity = prompt('새로운 도시를 입력하세요:');
+      const newVillage = prompt('새로운 마을을 입력하세요:');
+      const newProvince = prompt('새로운 도를 입력하세요:');
+      if (newCity && newVillage && newProvince) {
+        fetch(user_url + 'users/address', {
+          method: 'POST',
+          credentials: 'include', // 쿠키 포함
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            city: newCity,
+            village: newVillage,
+            province: newProvince
           })
+        })
           .then(response => {
             if (!response.ok) {
-              throw new Error('패스워드 변경에 실패했습니다.');
+              throw new Error('주소 추가에 실패했습니다.');
             }
-            alert('패스워드가 성공적으로 변경되었습니다.');
+            alert('주소가 성공적으로 추가되었습니다.');
+            // 주소 목록을 다시 불러와서 업데이트합니다.
+            fetchProfile();
           })
           .catch(error => {
             console.error('Error:', error);
           });
-        } else {
-          alert('새로운 패스워드가 일치하지 않습니다. 다시 시도해주세요.');
+      }
+    }
+
+    function editAddress(address) {
+      const newCity = prompt('새로운 도시를 입력하세요:');
+      const newVillage = prompt('새로운 마을을 입력하세요:');
+      const newProvince = prompt('새로운 도를 입력하세요:');
+      if (newCity && newVillage && newProvince) {
+        fetch(user_url + 'users/address/' + address.id, {
+          method: 'PUT',
+          credentials: 'include', // 쿠키 포함
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            city: newCity,
+            village: newVillage,
+            province: newProvince
+          })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('주소 수정에 실패했습니다.');
+            }
+            alert('주소가 성공적으로 수정되었습니다.');
+            // 주소 목록을 다시 불러와서 업데이트합니다.
+            fetchProfile();
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    }
+
+    function deleteAddress(address) {
+      const confirmDelete = confirm(`주소 '${address}'를 삭제하시겠습니까?`);
+      if (confirmDelete) {
+        fetch(user_url + 'users/address/' + address.id, {
+          method: 'DELETE',
+          credentials: 'include', // 쿠키 포함
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('주소 삭제에 실패했습니다.');
+            }
+            alert('주소가 성공적으로 삭제되었습니다.');
+            // 주소 목록을 다시 불러와서 업데이트합니다.
+            fetchProfile();
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    }
+
+    function changeUsername() {
+      const newUsername = prompt('새로운 유저이름을 입력하세요:');
+      if (newUsername) {
+        fetch(user_url + 'users/username', {
+          method: 'PUT',
+          credentials: 'include', // 쿠키 포함
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username: newUsername })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('유저이름 변경에 실패했습니다.');
+            }
+            alert('유저이름이 성공적으로 변경되었습니다.');
+            // 변경된 유저이름을 화면에 업데이트합니다.
+            document.getElementById('username').textContent = newUsername;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    }
+
+    function changePassword() {
+      const currentPassword = prompt('기존 패스워드를 입력하세요:');
+      if (currentPassword) {
+        const newPassword = prompt('새로운 패스워드를 입력하세요:');
+        if (newPassword) {
+          const confirmPassword = prompt('새로운 패스워드를 다시 입력하세요:');
+          if (newPassword === confirmPassword) {
+            fetch(user_url + 'users/password', {
+              method: 'PUT',
+              credentials: 'include', // 쿠키 포함
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                password: currentPassword,
+                changePassword: newPassword,
+                changePasswordCheck: confirmPassword
+              })
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('패스워드 변경에 실패했습니다.');
+                }
+                alert('패스워드가 성공적으로 변경되었습니다.');
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+          } else {
+            alert('새로운 패스워드가 일치하지 않습니다. 다시 시도해주세요.');
+          }
         }
       }
     }
-  }
 
-  // 페이지가 로드될 때 프로필을 조회하도록 호출합니다.
-  document.addEventListener('DOMContentLoaded', function() {
-    fetchProfile();
-  });
-</script>
-<script src="/js/common.js"></script>
+    // 페이지가 로드될 때 프로필을 조회하도록 호출합니다.
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchProfile();
+    });
+  </script>
+  <script src="/js/common.js"></script>
 </body>
+
 </html>
