@@ -9,7 +9,12 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("https://thunderdev.site", "http://thunderdev.site")
+            .allowedOrigins(
+                "https://msa.thunderdev.site",
+                "http://msa.thunderdev.site",
+                "https://thunderdev.site",
+                "http://thunderdev.site"
+            )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .allowedHeaders("*")
             .exposedHeaders("Authorization")
