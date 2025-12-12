@@ -1,49 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="css/loginSignup.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/common.css" />
+  <link rel="stylesheet" href="css/loginSignup.css" />
   <title>회원가입 및 로그인</title>
+  <style>
+    /* 페이지 전용 비주얼 보강 (기능 영향 없음) */
+    .auth-wrapper {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .auth-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .auth-card header {
+      margin-bottom: 16px;
+    }
+    .auth-card header h2 {
+      margin: 0 0 8px 0;
+      text-align: left;
+    }
+    .auth-card header p {
+      margin: 0;
+      color: var(--color-muted);
+      font-size: 0.9rem;
+    }
+    @media (min-width: 860px) {
+      .auth-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 
 <body>
   <div id="nav-container"></div>
-  <main class="container">
-    <h2>회원가입</h2>
-    <form id="signupForm" class="section surface">
 
-      <label for="signupEmail">이메일:</label>
-      <input type="email" id="signupEmail" name="email" required><br><br>
+  <main class="auth-wrapper" role="main">
+    <div class="auth-grid">
+      <section class="section surface auth-card" aria-labelledby="signup-title">
+        <header>
+          <h2 id="signup-title">회원가입</h2>
+          <p>이메일과 비밀번호를 입력해 계정을 생성하세요.</p>
+        </header>
+        <!-- 기능 호환: form/필드/ID/버튼 그대로 유지 -->
+        <form id="signupForm" autocomplete="on">
+          <label for="signupEmail">이메일</label>
+          <input type="email" id="signupEmail" name="email" placeholder="you@example.com" required />
 
-      <label for="signupUsername">사용자 이름:</label>
-      <input type="text" id="signupUsername" name="username" required><br><br>
+          <label for="signupUsername">사용자 이름</label>
+          <input type="text" id="signupUsername" name="username" placeholder="닉네임" required />
 
-      <label for="signupPassword">비밀번호:</label>
-      <input type="password" id="signupPassword" name="password" required><br><br>
+          <label for="signupPassword">비밀번호</label>
+          <input type="password" id="signupPassword" name="password" placeholder="8자 이상" required />
 
-      <!--   <input type="checkbox" id="adminCheckbox" name="admin">
-  <label for="adminCheckbox">Admin 권한 부여</label><br><br>
+          <!-- 관리자 옵션 (주석 유지) -->
+          <!--
+          <input type="checkbox" id="adminCheckbox" name="admin" />
+          <label for="adminCheckbox">Admin 권한 부여</label>
+          <label for="adminToken">Admin 토큰</label>
+          <input type="text" id="adminToken" name="adminToken" />
+          -->
 
-  <label for="adminToken">Admin 토큰:</label>
-  <input type="text" id="adminToken" name="adminToken"><br><br> -->
+          <button type="button" onclick="submitSignupForm()" aria-label="회원가입 제출">가입하기</button>
+        </form>
+      </section>
 
-      <button type="button" onclick="submitSignupForm()">가입하기</button>
-    </form>
+      <section class="section surface auth-card" aria-labelledby="login-title">
+        <header>
+          <h2 id="login-title">로그인</h2>
+          <p>등록한 이메일과 비밀번호로 로그인하세요.</p>
+        </header>
+        <!-- 기능 호환: form/필드/ID/버튼 그대로 유지 -->
+        <form id="loginForm" autocomplete="on">
+          <label for="loginEmail">이메일</label>
+          <input type="email" id="loginEmail" name="email" placeholder="you@example.com" required />
 
-    <h2 class="mt-4">로그인</h2>
-    <form id="loginForm" class="section surface">
+          <label for="loginPassword">비밀번호</label>
+          <input type="password" id="loginPassword" name="password" placeholder="비밀번호" required />
 
-      <label for="loginEmail">이메일:</label>
-      <input type="email" id="loginEmail" name="email" required><br><br>
-
-      <label for="loginPassword">비밀번호:</label>
-      <input type="password" id="loginPassword" name="password" required><br><br>
-
-      <button type="button" onclick="submitLoginForm()">로그인하기</button>
-    </form>
+          <button type="button" onclick="submitLoginForm()" aria-label="로그인 제출">로그인하기</button>
+        </form>
+      </section>
+    </div>
   </main>
 
   <script src="/js/env.js"></script>
@@ -136,3 +179,4 @@
 </body>
 
 </html>
+

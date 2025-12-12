@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
   <meta charset="UTF-8">
@@ -7,12 +7,25 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/cart.css">
   <title>장바구니</title>
+  <style>
+    /* 페이지 전용 비주얼 보강 (기능 영향 없음) */
+    .page-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:24px 0 12px; }
+    .page-head h2 { margin:0; }
+    #cartItems { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; padding-top:12px; }
+    #cartItems > div { background: var(--color-surface); border:1px solid var(--color-border); border-radius: var(--radius-md); padding:16px; box-shadow: var(--shadow-sm); display:flex; flex-direction:column; gap:6px; }
+    #cartItems img { width:100%; height:180px; object-fit:cover; border-radius: var(--radius-sm); }
+    #addressSelect { margin: 12px 0; padding: 10px 12px; border-radius: var(--radius-sm); border:1px solid var(--color-border); background: #fff; }
+    #totalPrice { font-weight:700; margin: 8px 0 12px; }
+    #placeOrderBtn { align-self: flex-start; }
+  </style>
 </head>
 
 <body>
   <div id="nav-container"></div>
   <main class="container">
-    <h2>장바구니</h2>
+    <section class="page-head" aria-label="장바구니 안내">
+      <h2>장바구니</h2>
+    </section>
     <div id="cartItems" class="section surface"></div>
     <select id="addressSelect">
       <option value="">배송 주소를 선택해주세요</option>

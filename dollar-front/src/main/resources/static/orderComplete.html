@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
   <meta charset="UTF-8">
@@ -8,17 +8,21 @@
   <link rel="stylesheet" href="/css/orderComplete.css">
   <title>주문 내역</title>
   <style>
-    .orderDetail {
-      display: none;
-      /* 기본적으로 숨김 */
-    }
+    /* 페이지 전용 비주얼 보강 (기능 영향 없음) */
+    .page-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:24px 0 12px; }
+    .page-head h2 { margin:0; }
+    #orderList > div { background: var(--color-surface); border:1px solid var(--color-border); border-radius: var(--radius-md); padding:16px; box-shadow: var(--shadow-sm); margin-bottom:12px; }
+    .orderDetail { display:none; background:#fafafa; border:1px dashed var(--color-border); border-radius: var(--radius-sm); padding:12px; margin-top:10px; }
+    .orderDetail p { margin: 6px 0; }
   </style>
 </head>
 
 <body>
   <div id="nav-container"></div>
   <main class="container">
-    <h2>주문 내역</h2>
+    <section class="page-head" aria-label="주문 안내">
+      <h2>주문 내역</h2>
+    </section>
     <div id="orderList" class="section surface"></div>
   </main>
 

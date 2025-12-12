@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
   <meta charset="UTF-8">
@@ -7,11 +7,29 @@
   <title>상품 상세 페이지</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/productDetail.css">
+  <style>
+    /* 페이지 전용 비주얼 보강 (기능 영향 없음) */
+    .page-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:24px 0 12px; }
+    .page-head h1 { margin:0; }
+    #productDetail { display:grid; grid-template-columns: 1fr; gap:24px; }
+    @media (min-width: 900px) { #productDetail { grid-template-columns: 1.2fr 1fr; } }
+    .productDetailImage img { border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+    .productDetail-addCart { display:flex; gap:12px; align-items:center; margin-bottom: 16px; }
+    #reviewSection { margin-top: 24px; }
+    #reviewList li { padding: 14px; border:1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 12px; background: var(--color-surface); }
+    #updateReviewForm { margin-top: 12px; }
+  </style>
 </head>
 
 <body>
   <div id="nav-container"></div>
   <main class="container">
+    <section class="page-head" aria-label="상품 정보 안내">
+      <div>
+        <h1>상품 상세</h1>
+        <p class="muted">상품을 확인하고 장바구니에 추가하세요.</p>
+      </div>
+    </section>
     <div id="productDetail" class="section surface">
       <div class="productDetailImage">
         <img id="productImage" src="/images/TIL.jpeg" alt="상품 이미지">

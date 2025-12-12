@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
   <meta charset="UTF-8">
@@ -7,17 +7,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/mainProduct.css">
+  <style>
+    /* 페이지 전용 비주얼 보강 (기능 영향 없음) */
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-6) 0 var(--space-4);
+    }
+    .page-head h1 { margin: 0; }
+    .page-head p { margin: 4px 0 0 0; }
+
+    #pagination {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-sm);
+    }
+    #pagination button {
+      padding: 8px 14px;
+      border-radius: 999px;
+    }
+    #currentPage {
+      min-width: 24px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* 초기 로딩 스켈레톤 (JS 로딩 시 자동 치환) */
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-6);
+      padding: var(--space-6) 0;
+    }
+    .skeleton-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-img { height: 240px; background: #f1f5f9; }
+    .skeleton-body { padding: var(--space-4); }
+    .skeleton-line { height: 14px; background: #e5e7eb; border-radius: 8px; margin-bottom: 10px; }
+    .skeleton-line.w60 { width: 60%; }
+    .skeleton-line.w40 { width: 40%; }
+    .skeleton-line.w90 { width: 90%; }
+    @keyframes pulse { 0%,100%{opacity:.9} 50%{opacity:.5} }
+  </style>
 </head>
 
 <body>
   <div id="nav-container"></div>
   <main class="container">
-    <div id="productList">상품 목록이 여기에 표시됩니다.</div>
-    <div id="pagination" class="mt-4">
-      <button id="prevPage">이전 페이지</button>
-      <span id="currentPage">1</span>
-      <button id="nextPage">다음 페이지</button>
-    </div>
+    <section class="page-head" aria-label="상품 안내">
+      <div>
+        <h1>상품 목록</h1>
+        <p class="muted">원하는 상품을 선택해 장바구니에 담아보세요.</p>
+      </div>
+      <div id="pagination" class="mt-4" role="navigation" aria-label="페이지 넘김">
+        <button id="prevPage">이전 페이지</button>
+        <span id="currentPage">1</span>
+        <button id="nextPage">다음 페이지</button>
+      </div>
+    </section>
+
+    <section id="productList" aria-live="polite" aria-busy="true">
+      <div class="skeleton-grid">
+        <div class="skeleton-card">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line w60"></div>
+            <div class="skeleton-line w40"></div>
+            <div class="skeleton-line w90"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line w60"></div>
+            <div class="skeleton-line w40"></div>
+            <div class="skeleton-line w90"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line w60"></div>
+            <div class="skeleton-line w40"></div>
+            <div class="skeleton-line w90"></div>
+          </div>
+        </div>
+      </div>
+    </section>
     <!--<button id="adminDashboard">관리자 페이지</button>-->
 
   </main>
@@ -67,13 +157,15 @@
             </div>
         `;
         productList.appendChild(productElement);
-
+      
         // 장바구니에 담기 버튼에 이벤트 리스너 추가
         productElement.querySelector('button').addEventListener('click', () => {
           const quantity = productElement.querySelector('.quantity').value;
           addToCart(product, quantity);
         });
       });
+      // 로딩 상태 해제 표시
+      productList.setAttribute('aria-busy', 'false');
     }
 
 

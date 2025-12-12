@@ -7,29 +7,45 @@
   <title>프로필 조회</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="css/myPage.css">
+  <style>
+    /* 페이지 전용 살짝 보강 (기능 영향 없음) */
+    .page-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:24px 0 12px; }
+    .page-head h1 { margin:0; }
+    .page-head p { margin:4px 0 0 0; color:var(--color-muted); }
+    .profile-grid { display:grid; grid-template-columns:1fr; gap:16px; }
+    @media (min-width: 860px) { .profile-grid { grid-template-columns:1fr 1fr; } }
+  </style>
 </head>
 
 <body>
   <div id="nav-container"></div>
   <main class="container">
-    <h1>프로필 조회</h1>
-    <div class="section surface">
+    <section class="page-head" aria-label="프로필 안내">
+      <div>
+        <h1>프로필 조회</h1>
+        <p>회원 정보와 주소를 관리하세요.</p>
+      </div>
+    </section>
+
+    <div class="profile-grid">
+    <div class="section surface profile-section">
       <label for="email">이메일 :</label>
       <p id="email"></p>
     </div>
-    <div>
+    <div class="section surface profile-section">
       <label for="username">유저 이름 :</label>
       <p id="username"></p>
       <button class="usernameChangeBtn" onclick="changeUsername()">유저이름 변경</button>
     </div>
-    <div>
+    <div class="section surface profile-section">
       <label for="password">패스워드 :</label>
       <p id="password">******</p>
       <button class="userPasswordChangeBtn" onclick="changePassword()">패스워드 변경</button>
     </div>
-    <div>
+    <div class="section surface profile-section">
       <label for="role">역할 :</label>
       <p id="role"></p>
+    </div>
     </div>
     <hr>
     <div class="myPageSubmitArea">
@@ -37,7 +53,7 @@
         <div id="addressList">주소 목록이 여기에 표시됩니다.</div>
         <button onclick="addAddress()">주소 추가</button>
       </div>
-      <button onclick="withdraw()">회원 탈퇴</button>
+      <button id="withdrawalBtn" onclick="withdraw()">회원 탈퇴</button>
     </div>
   </main>
   <script src="/js/env.js"></script>
