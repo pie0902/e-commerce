@@ -1,36 +1,36 @@
-/* 전역 바디/폰트는 common.css 사용 */
+/* 전역 바디/폰트는 common.css 사용. 로그인/회원가입 전용 스타일은 스코프 적용 */
 
-main.container {
+.auth-wrapper {
   max-width: 500px;
   margin: 40px auto;
   padding: 0 20px;
 }
 
-h2 {
+.auth-card h2 {
   text-align: center;
   margin-bottom: 20px;
   color: var(--color-text);
 }
 
-form {
+.auth-card form {
   padding: 30px;
   margin-bottom: 40px;
 }
 
-label {
+.auth-card label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
   color: var(--color-text);
 }
 
-input[type="email"],
-input[type="text"],
-input[type="password"] {
+.auth-card input[type="email"],
+.auth-card input[type="text"],
+.auth-card input[type="password"] {
   margin-bottom: 20px;
 }
 
-button {
+.auth-card button {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -46,7 +46,7 @@ button {
   display: block;
 }
 
-/* 간격 조정 */
-.mt-4 {
+/* 간격 조정 (페이지 스코프) */
+.auth-wrapper .mt-4 {
   margin-top: 40px;
 }

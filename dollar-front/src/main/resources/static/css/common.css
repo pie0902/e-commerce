@@ -171,8 +171,8 @@ button:focus-visible {
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2), var(--shadow-md);
 }
 
-/* 3) 헤더 */
-header {
+/* 3) 헤더 (site-header로 스코프) */
+header.site-header {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
@@ -182,7 +182,7 @@ header {
   box-shadow: var(--shadow-sm);
 }
 
-.header-container {
+.site-header .header-container {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
@@ -193,39 +193,39 @@ header {
   height: 70px;
 }
 
-.logo a {
+.site-header .logo a {
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
-.logo img {
+.site-header .logo img {
   height: 36px;
 }
 
-.logo h5 {
+.site-header .logo h5 {
   font-size: 1.1rem;
   font-weight: 800;
   color: var(--color-text);
   margin: 0;
 }
 
-.menu {
+.site-header .menu {
   display: flex;
   gap: var(--space-6);
 }
 
-.menu li a {
+.site-header .menu li a {
   color: var(--color-muted);
   font-weight: 500;
   font-size: 0.95rem;
 }
 
-.menu li a:hover {
+.site-header .menu li a:hover {
   color: var(--color-primary);
 }
 
-#searchForm {
+.site-header #searchForm {
   display: flex;
   gap: var(--space-2);
   align-items: center;
@@ -235,7 +235,7 @@ header {
   border: 1px solid var(--color-border);
 }
 
-#searchForm input[type="text"] {
+.site-header #searchForm input[type="text"] {
   width: 200px;
   border: none;
   background: transparent;
@@ -243,13 +243,13 @@ header {
   box-shadow: none;
 }
 
-#searchForm button {
+.site-header #searchForm button {
   padding: 6px 12px;
   font-size: 0.85rem;
   border-radius: 999px;
 }
 
-.icons {
+.site-header .icons {
   font-size: 1.2rem;
   display: flex;
   gap: var(--space-4);
@@ -257,17 +257,17 @@ header {
   align-items: center;
 }
 
-.icons i {
+.site-header .icons i {
   cursor: pointer;
   transition: color 0.2s;
   position: relative;
 }
 
-.icons i:hover {
+.site-header .icons i:hover {
   color: var(--color-primary);
 }
 
-.cart-count {
+.site-header .cart-count {
   position: absolute;
   top: -8px;
   right: -8px;
