@@ -55,59 +55,102 @@ function loadHeader() {
     .catch(error => console.error('Error loading header:', error));
 }
 
-// 이벤트 바인딩
+// 이벤트 바인딩 (이벤트 위임 사용)
 function bindHeaderEvents() {
-  // 장바구니 버튼
-  const basketButton = document.getElementById('basket');
-  if (basketButton) {
-    basketButton.addEventListener('click', function() {
+  document.body.addEventListener('click', function(event) {
+    // 장바구니 버튼 또는 그 내부 요소 클릭 시
+    if (event.target.closest('#basket')) {
       window.location.href = '/cart.html';
-    });
-  }
+      return;
+    }
 
-  // 마이페이지 버튼 (기본 동작: 로그인 안되어 있으면 로그인 페이지로)
-  const myPageIcon = document.getElementById('myPage');
-  if (myPageIcon) {
-    myPageIcon.addEventListener('click', function () {
-       // checkToken에서 로그인 상태일 때 오버라이드 됨.
-       // 기본값은 로그인 페이지로 이동
-       window.location.href = '/loginSignup.html';
-    });
-  }
-
-  // 로그인/회원가입 기본 버튼(초기 표시용)
-  const loginSignupBtn = document.getElementById('loginSignupBtn');
-  if (loginSignupBtn) {
-    loginSignupBtn.addEventListener('click', function () {
-      window.location.href = '/loginSignup.html';
-    });
-  }
-
-  // 검색 버튼
-  const searchButton = document.getElementById('searchBtn');
-  const searchBox = document.getElementById('searchBox');
-
-  if (searchButton && searchBox) {
-    searchButton.addEventListener('click', () => {
-      const searchQuery = searchBox.value;
-      if (typeof fetchSearchProducts === 'function') {
-          fetchSearchProducts(searchQuery);
+    // 마이페이지 버튼 또는 그 내부 요소 클릭 시
+    const myPageBtn = event.target.closest('#myPage') || event.target.closest('#myPageBtn');
+    if (myPageBtn) {
+      // 로그인 상태 여부는 checkToken 내부 로직이나 페이지 이동 후 서버 리다이렉트에 맡김
+      // 이미 checkToken이 돌아서 버튼이 교체되었을 수 있으므로,
+      // myPageBtn(로그인 후)은 myPage.html로, 아이콘(myPage)은 상황에 따라 동작
+      if (myPageBtn.id === 'myPageBtn') {
+         window.location.href = '/myPage.html';
       } else {
-          // 메인 페이지가 아니면 검색 결과 페이지로 이동
-          window.location.href = `/index.html?search=${encodeURIComponent(searchQuery)}`;
+         // 아이콘 클릭 시: 토큰이 있으면 마이페이지, 없으면 로그인페이지
+         // 간단히 처리하기 위해 일단 페이지 이동 시도 (권한 없으면 튕기게)
+         const token = getTokenFromCookie();
+         if(token) window.location.href = '/myPage.html';
+         else window.location.href = '/loginSignup.html';
       }
-    });
-  }
-  
-  // 검색 폼 제출
+      return;
+    }
+
+    // 로그인/회원가입 버튼 클릭 시
+    if (event.target.closest('#loginSignupBtn')) {
+      window.location.href = '/loginSignup.html';
+      return;
+    }
+    
+    // 주문내역 버튼
+    if (event.target.closest('#orderPage')) {
+      window.location.href = '/orderComplete.html';
+      return;
+    }
+
+    // 관리자 페이지 버튼
+    if (event.target.closest('#adminPageBtn')) {
+       window.location.href = '/adminDashboard.html';
+       return;
+    }
+    
+    // 로그아웃 버튼
+    if (event.target.closest('#logout')) {
+        fetch(`${USER_API}users/logout`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => {
+            if (response.ok) {
+              // 프론트에서 관리하는 UI용 쿠키도 제거
+              document.cookie = 'Authorization=; Max-Age=0; path=/;';
+              alert('로그아웃 되었습니다.');
+              window.location.href = '/index.html';
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        return;
+    }
+  });
+
+  // 검색 관련은 폼 서브밋이라 별도 위임이나 기존 유지
   const searchForm = document.getElementById('searchForm');
-  if (searchForm) {
-    searchForm.addEventListener('submit', (event) => {
+  // 동적 로드된 폼이라 여기서 못 찾을 수 있음 -> 이것도 위임으로 처리하거나 loadHeader 안에서 처리해야 함.
+  // 안전하게 위임으로 처리:
+  document.body.addEventListener('submit', function(event) {
+    if (event.target.id === 'searchForm') {
       event.preventDefault(); 
-      const searchQuery = document.getElementById('searchBox').value;
-      window.location.href = `/index.html?search=${encodeURIComponent(searchQuery)}`;
-    });
-  }
+      const searchBox = event.target.querySelector('#searchBox');
+      if(searchBox) {
+        const searchQuery = searchBox.value;
+        if (typeof fetchSearchProducts === 'function') {
+            fetchSearchProducts(searchQuery);
+        } else {
+            window.location.href = `/index.html?search=${encodeURIComponent(searchQuery)}`;
+        }
+      }
+    }
+  });
+  
+  // 검색 버튼 클릭 (type=submit이라 form submit으로 처리되지만, 명시적 클릭도 처리)
+  document.body.addEventListener('click', function(event) {
+      if (event.target.closest('#searchBtn')) {
+          // form submit 이벤트가 발생하므로 여기서는 preventDefault를 안하면 두 번 실행될 수 있음.
+          // 하지만 type="submit"이면 폼 이벤트로 넘기는게 정석.
+          // 여기서는 로직 제거 또는 폼이 없는 경우 대비
+      }
+  });
 }
 
 // 메인 페이지용 검색 함수 (index.html에 정의됨)가 없을 경우를 대비한 placeholder
@@ -124,83 +167,23 @@ function checkToken() {
   if (!authButtons) return;
 
   const renderLoggedIn = (role) => {
-    authButtons.innerHTML = `
+    let html = `
       <button id="myPageBtn">마이페이지</button>
       <button id="orderPage">주문내역</button>
       <button id="logout">로그아웃</button>
     `;
 
-    const myPageBtn = document.getElementById('myPageBtn');
-    if (myPageBtn) {
-      myPageBtn.addEventListener('click', function () {
-        window.location.href = 'myPage.html';
-      });
-    }
-
-    const myPageIcon = document.getElementById('myPage');
-    if (myPageIcon) {
-      myPageIcon.addEventListener('click', function () {
-        window.location.href = 'myPage.html';
-      });
-    }
-
-    const orderBtn = document.getElementById('orderPage');
-    if (orderBtn) {
-      orderBtn.addEventListener('click', function () {
-        window.location.href = 'orderComplete.html';
-      });
-    }
-
-    const logoutBtn = document.getElementById('logout');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', function () {
-        fetch(`${USER_API}users/logout`, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-          .then(response => {
-            if (response.ok) {
-              // 프론트에서 관리하는 UI용 쿠키도 제거
-              document.cookie = 'Authorization=; Max-Age=0; path=/;';
-              alert('로그아웃 되었습니다.');
-              window.location.reload();
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      });
-    }
-
     if (role === 'SELLER') {
-      const adminButton = document.createElement('button');
-      adminButton.textContent = '관리자 페이지';
-      adminButton.addEventListener('click', function () {
-        window.location.href = 'adminDashboard.html';
-      });
-      authButtons.appendChild(adminButton);
+      html += `<button id="adminPageBtn">관리자 페이지</button>`;
     }
+    
+    authButtons.innerHTML = html;
   };
 
   const renderLoggedOut = () => {
     authButtons.innerHTML = `
       <button id="loginSignupBtn">로그인/회원가입</button>
     `;
-    const loginBtn = document.getElementById('loginSignupBtn');
-    if (loginBtn) {
-      loginBtn.addEventListener('click', function () {
-        window.location.href = 'loginSignup.html';
-      });
-    }
-    const myPageIcon = document.getElementById('myPage');
-    if (myPageIcon) {
-      myPageIcon.addEventListener('click', function () {
-        window.location.href = 'loginSignup.html';
-      });
-    }
   };
 
   // 1) 쿠키에서 토큰 확인 (비 HttpOnly 환경 지원)
