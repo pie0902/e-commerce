@@ -24,15 +24,7 @@ function getRoleFromToken(token) {
   return decodedToken.role;
 }
 document.addEventListener('DOMContentLoaded', function() {
-  ensureFontAwesome();
-  fetch('/components/header.html')
-  .then(response => response.text())
-  .then(html => {
-    document.getElementById('nav-container').innerHTML = html;
-    // Adjust body padding for fixed header
-    document.body.classList.add('has-fixed-header');
-    bindHeaderEvents(); // header.html의 스크립트를 바인딩하는 함수 호출
-  });
+  bindHeaderEvents();
 });
 
 // 장바구니 이동 함수
@@ -40,9 +32,12 @@ function bindHeaderEvents() {
   // header.html에서 필요한 모든 이벤트 리스너를 여기에 바인딩
 
   // 장바구니 버튼의 이벤트 리스너
-  document.getElementById('basket').addEventListener('click', function() {
-    window.location.href = '/cart.html';
-  });
+  const basketButton = document.getElementById('basket');
+  if (basketButton) {
+    basketButton.addEventListener('click', function() {
+      window.location.href = '/cart.html';
+    });
+  }
 
   // 검색 이벤트 리스너 바인딩
   const searchButton = document.getElementById('searchBtn');
@@ -78,16 +73,6 @@ function fetchSearchProducts(query) {
 }
 
 // Ensure Font Awesome is loaded once (icons for header)
-function ensureFontAwesome() {
-  if (document.getElementById('fa-css')) return;
-  const link = document.createElement('link');
-  link.id = 'fa-css';
-  link.rel = 'stylesheet';
-  link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css';
-  document.head.appendChild(link);
-}
-
-
 // 로그인 상태 확인 후 버튼 렌더링 (쿠키 우선, 실패 시 API 폴백)
 function checkToken() {
   const authButtons = document.getElementById('authButtons');

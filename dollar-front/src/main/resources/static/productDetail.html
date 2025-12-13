@@ -22,7 +22,41 @@
 </head>
 
 <body>
-  <div id="nav-container"></div>
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <a class="logo" href="/" aria-label="메인으로 이동">
+          <img src="/images/logo.gif" alt="텐트릴리언달러 로고" />
+          <span>tentrilliondollars</span>
+        </a>
+        <a class="home-link" href="/" aria-label="홈으로 이동">Home</a>
+      </div>
+
+      <form id="searchForm" action="/index.html" method="get" role="search" aria-label="상품 검색">
+        <input type="text" id="searchBox" name="search" placeholder="상품 검색..." autocomplete="off" />
+        <button type="submit" aria-label="검색" id="searchBtn">검색</button>
+      </form>
+
+      <div class="actions">
+        <div class="icons" aria-label="빠른 작업">
+          <button type="button" id="basket" class="icon-button" aria-label="장바구니">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M6 6h15l-1.5 9h-12L6 6zm0 0L5 3H2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+              <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+            </svg>
+          </button>
+          <button type="button" id="myPage" class="icon-button" aria-label="마이페이지">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7" fill="none" />
+              <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+        <div id="authButtons" aria-live="polite" aria-atomic="true"></div>
+      </div>
+    </div>
+  </header>
   <main class="container">
     <section class="page-head" aria-label="상품 정보 안내">
       <div>
