@@ -28,10 +28,10 @@
     </section>
 
     <div class="profile-grid">
-    <div class="section surface profile-section">
-      <label for="email">이메일 :</label>
-      <p id="email"></p>
-    </div>
+      <div class="section surface profile-section">
+        <label for="email">이메일 :</label>
+        <p id="email"></p>
+      </div>
     <div class="section surface profile-section">
       <label for="username">유저 이름 :</label>
       <p id="username"></p>
@@ -48,12 +48,15 @@
     </div>
     </div>
     <hr>
-    <div class="myPageSubmitArea">
-      <div>
-        <div id="addressList">주소 목록이 여기에 표시됩니다.</div>
-        <button onclick="addAddress()">주소 추가</button>
+    <div class="section surface myPageSubmitArea">
+      <div style="flex:1; min-width: 280px;">
+        <h2 style="margin: 0 0 10px 0;">주소 관리</h2>
+        <div id="addressList" aria-live="polite">주소 목록이 여기에 표시됩니다.</div>
+        <button onclick="addAddress()" style="margin-top: 12px;">주소 추가</button>
       </div>
-      <button id="withdrawalBtn" onclick="withdraw()">회원 탈퇴</button>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button id="withdrawalBtn" onclick="withdraw()">회원 탈퇴</button>
+      </div>
     </div>
   </main>
   <script src="/js/env.js"></script>

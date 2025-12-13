@@ -17,6 +17,11 @@
     #addressSelect { margin: 12px 0; padding: 10px 12px; border-radius: var(--radius-sm); border:1px solid var(--color-border); background: #fff; }
     #totalPrice { font-weight:700; margin: 8px 0 12px; }
     #placeOrderBtn { align-self: flex-start; }
+    /* 수량 컨트롤을 작고 가로 배치로 */
+    .qty-row { display:inline-flex; align-items:center; gap:8px; }
+    .qty-row .quantity { min-width: 28px; text-align:center; font-weight:700; }
+    .qty-btn { padding: 4px 10px; border-radius: 999px; background: var(--color-bg); border:1px solid var(--color-border); color: var(--color-text); box-shadow: var(--shadow-sm); line-height: 1; }
+    .qty-btn:hover { background: var(--color-border); }
   </style>
 </head>
 
@@ -73,14 +78,17 @@
       cartItems.forEach((item, index) => {
         const itemElement = document.createElement('div');
         itemElement.innerHTML = `
-      <img src="${item.imageUrl}" alt="${item.name}" style="width: 100px; height: auto;">
-      <p>${item.name}</p>
-      <p>가격: ${item.price}원</p>
-      <p>수량: <span class="quantity" data-index="${index}">${item.quantity}</span></p>
-      <button onclick="updateQuantity(${index}, -1)">-</button>
-      <button onclick="updateQuantity(${index}, 1)">+</button>
-      <p>합계: <span class="total">${item.price * item.quantity}</span>원</p>
-    `;
+          <img src="${item.imageUrl}" alt="${item.name}">
+          <p class="name">${item.name}</p>
+          <p class="price">가격: ${item.price}원</p>
+          <p class="qty-row">
+            <span>수량:</span>
+            <button class="qty-btn" onclick="updateQuantity(${index}, -1)" aria-label="수량 감소">−</button>
+            <span class="quantity" data-index="${index}">${item.quantity}</span>
+            <button class="qty-btn" onclick="updateQuantity(${index}, 1)" aria-label="수량 증가">+</button>
+          </p>
+          <p class="sum">합계: <span class="total">${item.price * item.quantity}</span>원</p>
+        `;
         cartItemsContainer.appendChild(itemElement);
 
         total += item.price * item.quantity;
