@@ -24,35 +24,65 @@ function getRoleFromToken(token) {
   return decodedToken.role;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+// 초기화 진입점: DOMContentLoaded 타이밍/중복 호출에도 안전하게 동작
+function initHeaderOnce() {
+  if (initHeaderOnce._done) return;
+  initHeaderOnce._done = true;
   loadHeader().then(() => {
     bindHeaderEvents();
     checkToken();
   });
-});
+}
+
+// DOM이 이미 로드된 경우에도 헤더를 주입하도록 보강
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHeaderOnce);
+} else {
+  // 이미 DOMContentLoaded 이후라면 즉시 실행
+  initHeaderOnce();
+}
 
 // 헤더 동적 로드 함수
 function loadHeader() {
-  return fetch('/components/header.html')
-    .then(response => {
-      if (!response.ok) throw new Error('Failed to load header');
-      return response.text();
-    })
-    .then(html => {
-      const placeholder = document.getElementById('header-placeholder');
-      if (placeholder) {
-        // placeholder div를 실제 header 내용으로 교체 (DOM 구조 유지)
+  const tryPaths = [
+    '/components/header.html',          // 절대 경로 (기본)
+    'components/header.html',           // 상대 경로 (서브패스 호환)
+    './components/header.html'          // 명시적 상대 경로
+  ];
+
+  // 순차 시도 유틸
+  const tryFetch = (idx) => {
+    if (idx >= tryPaths.length) {
+      console.error('Error loading header: all paths failed');
+      return Promise.resolve();
+    }
+    const path = tryPaths[idx];
+    return fetch(path)
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load header');
+        return response.text();
+      })
+      .then(html => {
+        let placeholder = document.getElementById('header-placeholder');
+        // placeholder가 없으면 body 맨 앞에 삽입
+        if (!placeholder) {
+          placeholder = document.createElement('div');
+          placeholder.id = 'header-placeholder';
+          document.body.prepend(placeholder);
+        }
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         const headerElement = tempDiv.querySelector('header');
         if (headerElement) {
-            placeholder.replaceWith(headerElement);
+          placeholder.replaceWith(headerElement);
         } else {
-            placeholder.innerHTML = html; // fallback
+          placeholder.innerHTML = html; // fallback (비정형 콘텐츠)
         }
-      }
-    })
-    .catch(error => console.error('Error loading header:', error));
+      })
+      .catch(() => tryFetch(idx + 1));
+  };
+
+  return tryFetch(0);
 }
 
 // 이벤트 바인딩 (이벤트 위임 사용)
