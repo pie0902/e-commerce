@@ -34,8 +34,8 @@ h2 {
   color: var(--color-text);
 }
 
-/* 버튼 스타일 */
-button {
+/* 버튼 스타일 (리스트 내부만) */
+#orderList button {
   margin-right: 8px;
   margin-top: 10px;
 }

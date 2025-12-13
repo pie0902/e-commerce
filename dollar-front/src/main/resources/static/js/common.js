@@ -24,6 +24,7 @@ function getRoleFromToken(token) {
   return decodedToken.role;
 }
 document.addEventListener('DOMContentLoaded', function() {
+  ensureFontAwesome();
   fetch('/components/header.html')
   .then(response => response.text())
   .then(html => {
@@ -67,10 +68,21 @@ function bindHeaderEvents() {
 
 
 function fetchSearchProducts(query) {
-  fetch(`${PRODUCT_API}products/search?search=${query}&page=${currentPage - 1}&size=12`)
+  const page = (typeof currentPage === 'number' && currentPage > 0) ? currentPage : 1;
+  fetch(`${PRODUCT_API}products/search?search=${encodeURIComponent(query)}&page=${page - 1}&size=12`)
   .then(response => response.json())
   .then(products => displayProducts(products))
   .catch(error => console.error('Error:', error));
+}
+
+// Ensure Font Awesome is loaded once (icons for header)
+function ensureFontAwesome() {
+  if (document.getElementById('fa-css')) return;
+  const link = document.createElement('link');
+  link.id = 'fa-css';
+  link.rel = 'stylesheet';
+  link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css';
+  document.head.appendChild(link);
 }
 
 

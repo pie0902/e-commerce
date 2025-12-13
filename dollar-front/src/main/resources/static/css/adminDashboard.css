@@ -6,7 +6,7 @@ h2 {
   margin-bottom: 24px;
 }
 
-form {
+main.container form {
   background: var(--color-surface);
   padding: 24px;
   border-radius: var(--radius-md);
@@ -15,31 +15,31 @@ form {
   margin-bottom: 30px;
 }
 
-label {
+main.container label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
   color: var(--color-text);
 }
 
-input,
-textarea {
+main.container input,
+main.container textarea {
   width: 100%;
   max-width: 400px;
   margin-bottom: 16px;
 }
 
-button {
+main.container button {
   margin-top: 8px;
 }
 
 /* 테이블 스타일 (common.css 기반 + 추가) */
-table {
+main.container table {
   margin-bottom: 40px;
 }
 
-th,
-td {
+main.container th,
+main.container td {
   vertical-align: middle;
 }
 
