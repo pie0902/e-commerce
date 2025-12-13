@@ -188,14 +188,14 @@ header.site-header {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .brand-group {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   min-width: 220px;
 }
 
@@ -232,7 +232,7 @@ header.site-header {
 }
 
 .site-header #searchForm {
-  flex: 1 1 360px;
+  flex: 1 1 460px;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -260,6 +260,7 @@ header.site-header {
   align-items: center;
   gap: var(--space-3);
   margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .site-header .icons {

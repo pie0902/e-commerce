@@ -39,6 +39,14 @@ function bindHeaderEvents() {
     });
   }
 
+  // 로그인/회원가입 기본 버튼(초기 표시용) 클릭 처리
+  const loginSignupBtn = document.getElementById('loginSignupBtn');
+  if (loginSignupBtn) {
+    loginSignupBtn.addEventListener('click', function () {
+      window.location.href = 'loginSignup.html';
+    });
+  }
+
   // 검색 이벤트 리스너 바인딩
   const searchButton = document.getElementById('searchBtn');
   const searchBox = document.getElementById('searchBox');
