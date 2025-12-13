@@ -23,15 +23,41 @@ function getRoleFromToken(token) {
   const decodedToken = JSON.parse(atob(base64));
   return decodedToken.role;
 }
+
 document.addEventListener('DOMContentLoaded', function() {
-  bindHeaderEvents();
+  loadHeader().then(() => {
+    bindHeaderEvents();
+    checkToken();
+  });
 });
 
-// 장바구니 이동 함수
-function bindHeaderEvents() {
-  // header.html에서 필요한 모든 이벤트 리스너를 여기에 바인딩
+// 헤더 동적 로드 함수
+function loadHeader() {
+  return fetch('/components/header.html')
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to load header');
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById('header-placeholder');
+      if (placeholder) {
+        // placeholder div를 실제 header 내용으로 교체 (DOM 구조 유지)
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const headerElement = tempDiv.querySelector('header');
+        if (headerElement) {
+            placeholder.replaceWith(headerElement);
+        } else {
+            placeholder.innerHTML = html; // fallback
+        }
+      }
+    })
+    .catch(error => console.error('Error loading header:', error));
+}
 
-  // 장바구니 버튼의 이벤트 리스너
+// 이벤트 바인딩
+function bindHeaderEvents() {
+  // 장바구니 버튼
   const basketButton = document.getElementById('basket');
   if (basketButton) {
     basketButton.addEventListener('click', function() {
@@ -39,46 +65,57 @@ function bindHeaderEvents() {
     });
   }
 
-  // 로그인/회원가입 기본 버튼(초기 표시용) 클릭 처리
-  const loginSignupBtn = document.getElementById('loginSignupBtn');
-  if (loginSignupBtn) {
-    loginSignupBtn.addEventListener('click', function () {
-      window.location.href = 'loginSignup.html';
+  // 마이페이지 버튼 (기본 동작: 로그인 안되어 있으면 로그인 페이지로)
+  const myPageIcon = document.getElementById('myPage');
+  if (myPageIcon) {
+    myPageIcon.addEventListener('click', function () {
+       // checkToken에서 로그인 상태일 때 오버라이드 됨.
+       // 기본값은 로그인 페이지로 이동
+       window.location.href = '/loginSignup.html';
     });
   }
 
-  // 검색 이벤트 리스너 바인딩
+  // 로그인/회원가입 기본 버튼(초기 표시용)
+  const loginSignupBtn = document.getElementById('loginSignupBtn');
+  if (loginSignupBtn) {
+    loginSignupBtn.addEventListener('click', function () {
+      window.location.href = '/loginSignup.html';
+    });
+  }
+
+  // 검색 버튼
   const searchButton = document.getElementById('searchBtn');
   const searchBox = document.getElementById('searchBox');
 
   if (searchButton && searchBox) {
     searchButton.addEventListener('click', () => {
       const searchQuery = searchBox.value;
-      fetchSearchProducts(searchQuery); // 검색 함수를 호출합니다.
+      if (typeof fetchSearchProducts === 'function') {
+          fetchSearchProducts(searchQuery);
+      } else {
+          // 메인 페이지가 아니면 검색 결과 페이지로 이동
+          window.location.href = `/index.html?search=${encodeURIComponent(searchQuery)}`;
+      }
     });
   }
-  // 검색 폼 제출 이벤트 바인딩
+  
+  // 검색 폼 제출
   const searchForm = document.getElementById('searchForm');
   if (searchForm) {
     searchForm.addEventListener('submit', (event) => {
-      event.preventDefault(); // 폼 제출 기본 동작 방지
+      event.preventDefault(); 
       const searchQuery = document.getElementById('searchBox').value;
       window.location.href = `/index.html?search=${encodeURIComponent(searchQuery)}`;
     });
   }
-
-  // 토큰 체크
-  checkToken();
 }
 
-
-function fetchSearchProducts(query) {
-  const page = (typeof currentPage === 'number' && currentPage > 0) ? currentPage : 1;
-  fetch(`${PRODUCT_API}products/search?search=${encodeURIComponent(query)}&page=${page - 1}&size=12`)
-  .then(response => response.json())
-  .then(products => displayProducts(products))
-  .catch(error => console.error('Error:', error));
+// 메인 페이지용 검색 함수 (index.html에 정의됨)가 없을 경우를 대비한 placeholder
+if (typeof fetchSearchProducts === 'undefined') {
+    // 다른 페이지에서는 이 함수가 호출될 일이 없지만, 
+    // bindHeaderEvents에서 참조 에러를 방지하기 위해 안전장치 마련
 }
+
 
 // Ensure Font Awesome is loaded once (icons for header)
 // 로그인 상태 확인 후 버튼 렌더링 (쿠키 우선, 실패 시 API 폴백)
