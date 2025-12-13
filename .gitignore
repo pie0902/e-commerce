@@ -56,3 +56,8 @@ cloudflared/*.json
 # application.yml
 # application.yaml
 # application.properties
+
+
+# ============================
+# 버그 스크린샷
+/screenshots

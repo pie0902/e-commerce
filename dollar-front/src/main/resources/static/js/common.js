@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
   .then(response => response.text())
   .then(html => {
     document.getElementById('nav-container').innerHTML = html;
+    // Adjust body padding for fixed header
+    document.body.classList.add('has-fixed-header');
     bindHeaderEvents(); // header.html의 스크립트를 바인딩하는 함수 호출
   });
 });

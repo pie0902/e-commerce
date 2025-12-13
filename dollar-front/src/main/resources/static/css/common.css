@@ -176,15 +176,18 @@ header.site-header {
   background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
-  z-index: 100;
+  width: 100%;
+  z-index: 1000;
   box-shadow: var(--shadow-sm);
 }
+body.has-fixed-header { padding-top: 70px; }
 
 .site-header .header-container {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto auto 1fr auto;
   gap: var(--space-4);
   align-items: center;
   max-width: 1200px;

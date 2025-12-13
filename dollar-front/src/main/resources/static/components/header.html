@@ -1,4 +1,4 @@
-<!-- Header fragment: markup only. Styles live in /css/common.css and icons loaded by common.js -->
+<!-- Header fragment: markup only. Styles live in /css/common.css -->
 <header class="site-header">
       <div class="header-container">
         <div class="brand logo">
@@ -11,9 +11,10 @@
         <nav aria-label="주요 메뉴">
           <ul class="menu">
             <li>
-              <a href="/" title="Home" aria-label="홈으로 이동">
-                <i class="fas fa-home" aria-hidden="true"></i>
-                <span class="sr-only">Home</span>
+              <a href="/" title="Home" aria-label="홈으로 이동" style="display:inline-flex;align-items:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5z" stroke="currentColor" stroke-width="1.7" fill="none"/>
+                </svg>
               </a>
             </li>
           </ul>
@@ -33,12 +34,19 @@
 
         <div class="actions">
           <div class="icons" aria-label="빠른 작업">
-            <i id="basket" class="fas fa-shopping-cart" role="button" tabindex="0" title="장바구니">
-              <span class="sr-only">장바구니</span>
-            </i>
-            <i id="myPage" class="fas fa-user" role="button" tabindex="0" title="마이페이지">
-              <span class="sr-only">마이페이지</span>
-            </i>
+            <a id="basket" role="button" tabindex="0" title="장바구니" aria-label="장바구니" style="display:inline-flex;align-items:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M6 6h15l-1.5 9h-12L6 6zm0 0L5 3H2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                <circle cx="18" cy="20" r="1.5" fill="currentColor"/>
+              </svg>
+            </a>
+            <a id="myPage" role="button" tabindex="0" title="마이페이지" aria-label="마이페이지" style="display:inline-flex;align-items:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7" fill="none"/>
+                <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+              </svg>
+            </a>
           </div>
           <div id="authButtons" aria-live="polite" aria-atomic="true">
             <!-- 로그인/회원가입 또는 마이페이지/로그아웃 버튼이 동적으로 추가됨 -->
