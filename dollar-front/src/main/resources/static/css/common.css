@@ -288,6 +288,17 @@ header.site-header {
   box-shadow: var(--shadow-md);
 }
 
+/* Cart icon via CSS mask so color follows currentColor */
+#basket::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url('/images/icons/cart.svg') no-repeat center / contain;
+  mask: url('/images/icons/cart.svg') no-repeat center / contain;
+}
+
 .site-header #authButtons {
   display: flex;
   align-items: center;
@@ -492,6 +503,18 @@ tr:last-child td {
   .site-header .actions {
     justify-content: space-between;
     margin-left: 0;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  /* 버튼 크기/여백 축소 */
+  .site-header #authButtons button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+  /* 버튼 묶음을 다음 줄로 보내고 오른쪽 정렬 */
+  .site-header #authButtons {
+    flex: 1 1 100%;
+    justify-content: flex-end;
   }
 }
 
@@ -499,9 +522,17 @@ tr:last-child td {
   .brand-group .home-link {
     display: none;
   }
+  /* 아주 작은 화면에서는 2열 그리드로 배치 */
   .site-header #authButtons {
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
     width: 100%;
+    justify-content: initial;
+  }
+  .site-header #authButtons button {
+    width: 100%;
+    padding: 10px 12px;
+    box-shadow: none;
   }
 }
