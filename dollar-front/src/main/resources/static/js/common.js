@@ -198,6 +198,7 @@ function checkToken() {
 
   const renderLoggedIn = (role) => {
     let html = `
+      <button id="basket">장바구니</button>
       <button id="myPageBtn">마이페이지</button>
       <button id="orderPage">주문내역</button>
       <button id="logout">로그아웃</button>
@@ -212,6 +213,7 @@ function checkToken() {
 
   const renderLoggedOut = () => {
     authButtons.innerHTML = `
+      <button id="basket">장바구니</button>
       <button id="loginSignupBtn">로그인/회원가입</button>
     `;
   };

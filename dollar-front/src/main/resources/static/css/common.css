@@ -288,16 +288,7 @@ header.site-header {
   box-shadow: var(--shadow-md);
 }
 
-/* Cart icon via CSS mask so color follows currentColor */
-#basket::before {
-  content: "";
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  background-color: currentColor;
-  -webkit-mask: url('/images/icons/cart.svg') no-repeat center / contain;
-  mask: url('/images/icons/cart.svg') no-repeat center / contain;
-}
+
 
 .site-header #authButtons {
   display: flex;
