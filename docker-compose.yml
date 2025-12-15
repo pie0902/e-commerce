@@ -8,9 +8,9 @@ services:
     ports:
       - "3307:3306"
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-dollar_db}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
-      - TZ=${TZ:-Asia/Seoul}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TZ}
     volumes:
       - db_data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -37,10 +37,10 @@ services:
     expose:
       - "8082"
     environment:
-      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
-      - RDS_USERNAME=${RDS_USERNAME:-root}
-      - RDS_PASSWORD=${RDS_PASSWORD:-root}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
+      - RDS_HOST=${RDS_HOST}
+      - RDS_USERNAME=${RDS_USERNAME}
+      - RDS_PASSWORD=${RDS_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     depends_on:
       dollar-db:
         condition: service_healthy
@@ -53,20 +53,20 @@ services:
     expose:
       - "8083"
     environment:
-      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
-      - RDS_USERNAME=${RDS_USERNAME:-root}
-      - RDS_PASSWORD=${RDS_PASSWORD:-root}
+      - RDS_HOST=${RDS_HOST}
+      - RDS_USERNAME=${RDS_USERNAME}
+      - RDS_PASSWORD=${RDS_PASSWORD}
       - REDIS_HOST=dollar-redis
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
-      - ACCESS_KEY_ID=${ACCESS_KEY_ID:-dummy}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-dummy}
-      - PRODUCT_BUCKET_NAME=${PRODUCT_BUCKET_NAME:-dummy}
-      - LOAD_USER=${LOAD_USER:-http://dollar-user:8082}
-      - LOAD_ORDER=${LOAD_ORDER:-http://dollar-order:8084}
-      - STORAGE_LOCAL_BASE_PATH=${STORAGE_LOCAL_BASE_PATH:-/data/uploads}
-      - STORAGE_MODE=${STORAGE_MODE:-local}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - PRODUCT_BUCKET_NAME=${PRODUCT_BUCKET_NAME}
+      - LOAD_USER=${LOAD_USER}
+      - LOAD_ORDER=${LOAD_ORDER}
+      - STORAGE_LOCAL_BASE_PATH=${STORAGE_LOCAL_BASE_PATH}
+      - STORAGE_MODE=${STORAGE_MODE}
       # Used to build public image URLs when STORAGE_MODE=local (Nginx on 8080)
-      - APP_BASE_URL=${PRODUCT_PUBLIC_BASE_URL:-http://localhost:8080/api/product}
+      - APP_BASE_URL=${PRODUCT_PUBLIC_BASE_URL}
     volumes:
       - ./uploads:/data/uploads
     depends_on:
@@ -81,18 +81,18 @@ services:
     expose:
       - "8084"
     environment:
-      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
-      - RDS_USERNAME=${RDS_USERNAME:-root}
-      - RDS_PASSWORD=${RDS_PASSWORD:-root}
+      - RDS_HOST=${RDS_HOST}
+      - RDS_USERNAME=${RDS_USERNAME}
+      - RDS_PASSWORD=${RDS_PASSWORD}
       - REDIS_HOST=dollar-redis
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
-      - KAKAO_API_ADMIN_KEY=${KAKAO_API_ADMIN_KEY:-DEV578F838590425AC23E1E89F7692DFE8F723BD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - KAKAO_API_ADMIN_KEY=${KAKAO_API_ADMIN_KEY}
       # External public base URL for redirects (override in .env on server)
-      - ORDER_PUBLIC_BASE_URL=${ORDER_PUBLIC_BASE_URL:-http://localhost:8080}
-      - ACCESS_KEY_ID=${ACCESS_KEY_ID:-dummy}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-dummy}
-      - LOAD_USER=${LOAD_USER:-http://dollar-user:8082}
-      - LOAD_PRODUCT=${LOAD_PRODUCT:-http://dollar-product:8083}
+      - ORDER_PUBLIC_BASE_URL=${ORDER_PUBLIC_BASE_URL}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - LOAD_USER=${LOAD_USER}
+      - LOAD_PRODUCT=${LOAD_PRODUCT}
     depends_on:
       dollar-product:
         condition: service_started
@@ -105,15 +105,15 @@ services:
     expose:
       - "8085"
     environment:
-      - RDS_HOST=${RDS_HOST:-jdbc:mysql://dollar-db:3306/dollar_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
-      - RDS_USERNAME=${RDS_USERNAME:-root}
-      - RDS_PASSWORD=${RDS_PASSWORD:-root}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-VGhpcyBJcyBBIFRlc3QgS2V5IEZvciBUZW4gVHJpbGxpb24gRG9sbGFycyBQcm9qZWN0IDIwMjQhIQ==}
-      - ACCESS_KEY_ID=${ACCESS_KEY_ID:-dummy}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-dummy}
-      - REVIEW_BUCKET_NAME=${REVIEW_BUCKET_NAME:-dummy}
-      - LOAD_PRODUCT=${LOAD_PRODUCT:-http://dollar-product:8083}
-      - LOAD_ORDER=${LOAD_ORDER:-http://dollar-order:8084}
+      - RDS_HOST=${RDS_HOST}
+      - RDS_USERNAME=${RDS_USERNAME}
+      - RDS_PASSWORD=${RDS_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - REVIEW_BUCKET_NAME=${REVIEW_BUCKET_NAME}
+      - LOAD_PRODUCT=${LOAD_PRODUCT}
+      - LOAD_ORDER=${LOAD_ORDER}
     networks:
       - dollar-network
     depends_on:
