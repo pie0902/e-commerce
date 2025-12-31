@@ -41,3 +41,13 @@ jobs:
             docker-compose up -d --build --remove-orphans
             docker-compose ps
           fi
+
+      - name: Docker cleanup
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker container prune -f || true
+          docker image prune -f || true
+          docker builder prune -f --filter "until=168h" || true
+          docker system df || true
