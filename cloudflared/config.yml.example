@@ -1,5 +1,6 @@
-# Sample Cloudflare Tunnel config (edit hostnames for your domain)
-# Place real credentials file path after creating the tunnel.
+# Cloudflare Tunnel config example.
+# Copy to config.yml and edit hostnames for your domain.
+# Keep credentials JSON out of git.
 
 tunnel: thunderdev-site
 credentials-file: /etc/cloudflared/thunderdev-site.json

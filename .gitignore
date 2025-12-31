@@ -41,6 +41,7 @@ data/
 # 🔹 Cloudflare Tunnel credentials
 # ============================
 cloudflared/*.json
+cloudflared/config.yml
 
 # ============================
 # 🔹 Environment files (민감)
