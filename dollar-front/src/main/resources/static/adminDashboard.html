@@ -1,84 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/adminDashboard.css">
-  <title>Admin Product Management</title>
+  <title>관리자 대시보드</title>
 </head>
 
-<body>
+<body class="admin-dashboard">
   <div id="header-placeholder"></div>
-  <main class="container">
-    <h1>Admin Product Management</h1>
 
-    <h2>Create Product</h2>
-    <form id="createProductForm">
-      <label for="name">상품명:</label>
-      <input type="text" id="name" required><br>
-
-      <label for="description">상품 상세 설명:</label>
-      <textarea id="description" required></textarea><br>
-
-      <label for="price">가격:</label>
-      <input type="number" id="price" step="0.01" required><br>
-
-      <label for="stock">수량:</label>
-      <input type="number" id="stock" required><br>
-      <button type="submit">상품 업로드</button>
+  <main class="container admin-dashboard__main">
+    <header class="admin-dashboard__header">
       <div>
-        <button id="updateSingleProductBtn">상품 수정</button>
-
+        <h1>관리자 대시보드</h1>
+        <p class="admin-dashboard__subtitle">상품/이미지/주문 상태/리뷰를 한 곳에서 관리합니다.</p>
       </div>
-    </form>
-    <!--이미지 업로드-->
-    <h2>Upload Product Image</h2>
-    <form id="uploadImageForm">
-      <label for="productIdUpload">Product ID:</label>
-      <input type="number" id="productIdUpload" required><br>
+      <div class="admin-dashboard__actions">
+        <button type="button" id="updateSingleProductBtn" class="btn-secondary">상품 ID로 수정</button>
+      </div>
+    </header>
 
-      <label for="productImage">Select image:</label>
-      <input type="file" id="productImage" required accept="image/*"><br>
+    <div class="admin-dashboard__grid">
+      <section class="section surface admin-card" aria-labelledby="create-product-title">
+        <header class="admin-card__header">
+          <h2 id="create-product-title">상품 등록</h2>
+          <p>상품 기본 정보를 입력하고 등록하세요.</p>
+        </header>
 
-      <button type="submit">Upload Image</button>
-    </form>
+        <form id="createProductForm" class="admin-form">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="name">상품명</label>
+              <input type="text" id="name" required placeholder="예: 프리미엄 티셔츠">
+            </div>
 
-    <h2>View Product Image</h2>
-    <label for="productIdView">Product ID:</label>
-    <input type="number" id="productIdView" required>
-    <button onclick="fetchProductImage()">View Image</button>
+            <div class="form-field">
+              <label for="price">가격</label>
+              <input type="number" id="price" step="0.01" required placeholder="0">
+            </div>
 
-    <div id="productImageView"></div>
-    <!--이미지 업로드-->
+            <div class="form-field span-2">
+              <label for="description">상품 상세 설명</label>
+              <textarea id="description" required rows="4" placeholder="상품 특징/재질/사이즈 등을 입력하세요"></textarea>
+            </div>
 
-    <h2>Product List</h2>
-    <table id="productTable" class="mt-4">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>상품명</th>
-          <th>가격</th>
-          <th>수량</th>
-          <th>주문 목록</th>
-          <th>상품 수정</th>
-          <th>리뷰 보기</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Product rows will be dynamically added here -->
-      </tbody>
-    </table>
+            <div class="form-field">
+              <label for="stock">재고 수량</label>
+              <input type="number" id="stock" required placeholder="0">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit">상품 업로드</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="section surface admin-card" aria-labelledby="image-title">
+        <header class="admin-card__header">
+          <h2 id="image-title">이미지 관리</h2>
+          <p>상품 이미지 업로드/미리보기</p>
+        </header>
+
+        <form id="uploadImageForm" class="admin-form">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="productIdUpload">Product ID</label>
+              <input type="number" id="productIdUpload" required placeholder="예: 1">
+            </div>
+
+            <div class="form-field span-2">
+              <label for="productImage">이미지 파일</label>
+              <input type="file" id="productImage" required accept="image/*">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit">이미지 업로드</button>
+          </div>
+        </form>
+
+        <div class="divider" role="separator" aria-hidden="true"></div>
+
+        <div class="admin-form admin-form--inline" aria-label="이미지 미리보기">
+          <div class="form-grid inline-grid">
+            <div class="form-field">
+              <label for="productIdView">Product ID</label>
+              <input type="number" id="productIdView" required placeholder="예: 1">
+            </div>
+            <div class="form-actions">
+              <button type="button" onclick="fetchProductImage()">이미지 보기</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="productImageView" class="image-preview" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <section class="section surface admin-card" aria-labelledby="product-list-title">
+      <header class="admin-card__header admin-card__header--row">
+        <div>
+          <h2 id="product-list-title">상품 목록</h2>
+          <p>주문 상태 변경, 상품 수정/삭제, 리뷰 조회</p>
+        </div>
+        <div class="admin-card__tools">
+          <button type="button" onclick="fetchProducts()">새로고침</button>
+        </div>
+      </header>
+
+      <div class="table-scroll" aria-label="상품 테이블">
+        <table id="productTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>상품명</th>
+              <th>가격</th>
+              <th>수량</th>
+              <th>주문 목록</th>
+              <th>상품 수정</th>
+              <th>리뷰 보기</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Product rows will be dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- Review Popup -->
-    <div id="reviewPopup" class="popup">
-      <div class="popup-content">
-        <span class="close">&times;</span>
-        <h3>Reviews</h3>
+    <div id="reviewPopup" class="popup" aria-hidden="true">
+      <div class="popup-content" role="dialog" aria-modal="true" aria-label="리뷰 목록">
+        <span class="close" role="button" tabindex="0" aria-label="닫기">&times;</span>
+        <h3>리뷰</h3>
         <div id="reviewContent"></div>
       </div>
     </div>
-
   </main>
   <script src="/js/env.js"></script>
   <script>
@@ -126,30 +187,33 @@
         <td>${product.price}</td>
         <td>${product.stock}</td>
         <td>
-          <div>
+          <div class="cell-stack">
             <select id="${orderDetailsSelectId}">
-              <option value="">Select Order Detail</option>
+              <option value="">주문 상세 선택</option>
               ${(product.orderDetails || []).map(orderDetail => `
                 <option value="${orderDetail.orderId}">Order ID: ${orderDetail.orderId}, Quantity: ${orderDetail.quantity}, State: ${orderDetail.orderState}</option>
               `).join('')}
             </select>
-            <select id="${newStateSelectId}">
-              <option value="0">Preparing</option>
-              <option value="1">Shipping</option>
-              <option value="2">Delivered</option>
-              <option value="3">Not Payed</option>
-            </select>
-            <button onclick="changeSelectedOrderState('${orderDetailsSelectId}', '${newStateSelectId}','${product.id}')">Change State</button>
+            <div class="cell-actions">
+              <select id="${newStateSelectId}">
+                <option value="0">Preparing</option>
+                <option value="1">Shipping</option>
+                <option value="2">Delivered</option>
+                <option value="3">Not Payed</option>
+              </select>
+              <button type="button" onclick="changeSelectedOrderState('${orderDetailsSelectId}', '${newStateSelectId}','${product.id}')">상태 변경</button>
+            </div>
           </div>
         </td>
         <td>
-          <button onclick="updateProduct(${product.id})">Update</button>
-          <button onclick="updateProductStockOnly(${product.id})">Update Stock</button>
-          <button onclick="deleteProduct(${product.id})">Delete</button>
-
+          <div class="cell-actions">
+            <button type="button" onclick="updateProduct(${product.id})">수정</button>
+            <button type="button" onclick="updateProductStockOnly(${product.id})">재고</button>
+            <button type="button" onclick="deleteProduct(${product.id})">삭제</button>
+          </div>
         </td>
         <td>
-          <button onclick="showReviewPopup(${product.id})">View Reviews</button>
+          <button type="button" onclick="showReviewPopup(${product.id})">리뷰</button>
         </td>
       `;
             tableBody.appendChild(row);

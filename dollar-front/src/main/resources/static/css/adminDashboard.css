@@ -1,46 +1,198 @@
 /* adminDashboard.css */
-/* 전역 폰트/배경은 common.css, 페이지 여백만 필요 시 컨테이너 사용 */
+/* Page-scoped styles for adminDashboard.html */
 
-h1,
-h2 {
-  margin-bottom: 24px;
+.admin-dashboard .admin-dashboard__main {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 
-main.container form {
-  background: var(--color-surface);
-  padding: 24px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 30px;
+.admin-dashboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
-main.container label {
+.admin-dashboard__header h1 {
+  margin: 0;
+}
+
+.admin-dashboard__subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-muted);
+}
+
+.admin-dashboard__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-dashboard__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.admin-card__header {
+  margin-bottom: var(--space-4);
+}
+
+.admin-card__header h2 {
+  margin-bottom: var(--space-2);
+}
+
+.admin-card__header p {
+  margin: 0;
+}
+
+.admin-card__header--row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.admin-card__tools {
+  flex: 0 0 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.inline-grid {
+  grid-template-columns: 1fr;
+  align-items: end;
+}
+
+.form-field label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   font-weight: 600;
   color: var(--color-text);
 }
 
-main.container input,
-main.container textarea {
+.form-actions {
+  margin-top: var(--space-4);
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-form--inline .form-actions {
+  margin-top: 0;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-5) 0;
+}
+
+.image-preview {
+  margin-top: var(--space-4);
+  min-height: 160px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-bg);
+  display: grid;
+  place-items: center;
+  color: var(--color-muted);
+}
+
+.image-preview:empty::before {
+  content: "이미지 미리보기가 여기에 표시됩니다.";
+}
+
+.image-preview img {
+  max-height: 320px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Button variants (keep common.css defaults, override only when needed) */
+.admin-dashboard .btn-secondary {
+  background: #fff;
+  background-image: none;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-dashboard .btn-secondary:hover {
+  background: var(--color-bg);
+}
+
+/* Table */
+.table-scroll {
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+#productTable {
   width: 100%;
-  max-width: 400px;
-  margin-bottom: 16px;
+  min-width: 860px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-main.container button {
-  margin-top: 8px;
+#productTable th,
+#productTable td {
+  padding: 12px 14px;
+  vertical-align: top;
 }
 
-/* 테이블 스타일 (common.css 기반 + 추가) */
-main.container table {
-  margin-bottom: 40px;
+#productTable thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 1;
 }
 
-main.container th,
-main.container td {
-  vertical-align: middle;
+#productTable tbody tr:hover td {
+  background: rgba(17, 24, 39, 0.02);
+}
+
+#productTable select {
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+#productTable button {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+}
+
+#productTable .cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+#productTable .cell-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Danger button (without touching JS) */
+#productTable button[onclick^="deleteProduct"] {
+  background: var(--color-danger);
+  background-image: none;
+}
+
+#productTable button[onclick^="deleteProduct"]:hover {
+  background: #dc2626;
 }
 
 /* 팝업 모달 */
@@ -64,7 +216,7 @@ main.container td {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   width: 90%;
-  max-width: 600px;
+  max-width: 640px;
   position: relative;
   animation: slideDown 0.3s ease-out;
 }

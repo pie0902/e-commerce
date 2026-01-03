@@ -3,6 +3,9 @@ name: Deploy (Self-Hosted)
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "screenshots/**"
   workflow_dispatch:
 
 concurrency:
@@ -27,18 +30,80 @@ jobs:
           cd "$DEPLOY_DIR"
 
           git fetch origin main
-          git reset --hard origin/main
+          changed_files="$(git diff --name-only HEAD..origin/main || true)"
+          if [ -z "${changed_files}" ]; then
+            echo "Already up-to-date; skipping deploy."
+            exit 0
+          fi
+
+          echo "Changed files:"
+          echo "${changed_files}"
+
+          docker_compose_changed=false
+          nginx_changed=false
+          monitoring_changed=false
+
+          if echo "${changed_files}" | grep -qE '^docker-compose\.yml$'; then
+            docker_compose_changed=true
+          fi
+          if echo "${changed_files}" | grep -qE '^nginx/'; then
+            nginx_changed=true
+          fi
+          if echo "${changed_files}" | grep -qE '^(docker-compose\.monitoring\.yml|monitoring/)'; then
+            monitoring_changed=true
+          fi
 
           services=(dollar-front dollar-user dollar-product dollar-order dollar-review)
+          services_to_deploy=()
           for service in "${services[@]}"; do
-            (cd "$service" && ./gradlew clean bootJar -x test)
+            if echo "${changed_files}" | grep -qE "^${service}/"; then
+              services_to_deploy+=("${service}")
+            fi
           done
 
+          git reset --hard origin/main
+
+          if [ "${docker_compose_changed}" = true ]; then
+            echo "docker-compose.yml changed; doing full deploy."
+            services_to_deploy=("${services[@]}")
+          fi
+
+          if [ ${#services_to_deploy[@]} -gt 0 ]; then
+            echo "Services to deploy: ${services_to_deploy[*]}"
+            for service in "${services_to_deploy[@]}"; do
+              (cd "$service" && ./gradlew clean bootJar -x test)
+            done
+          else
+            echo "No service changes detected."
+          fi
+
           if docker compose version >/dev/null 2>&1; then
-            docker compose up -d --build --remove-orphans
+            if [ "${docker_compose_changed}" = true ]; then
+              docker compose up -d --build --remove-orphans
+            elif [ ${#services_to_deploy[@]} -gt 0 ]; then
+              docker compose up -d --build --remove-orphans "${services_to_deploy[@]}"
+            fi
+            if [ "${nginx_changed}" = true ]; then
+              docker compose restart nginx
+            fi
+            if [ "${monitoring_changed}" = true ]; then
+              docker compose -p monitoring -f docker-compose.monitoring.yml up -d
+              docker compose -p monitoring -f docker-compose.monitoring.yml ps
+            fi
             docker compose ps
           else
-            docker-compose up -d --build --remove-orphans
+            if [ "${docker_compose_changed}" = true ]; then
+              docker-compose up -d --build --remove-orphans
+            elif [ ${#services_to_deploy[@]} -gt 0 ]; then
+              docker-compose up -d --build --remove-orphans "${services_to_deploy[@]}"
+            fi
+            if [ "${nginx_changed}" = true ]; then
+              docker-compose restart nginx
+            fi
+            if [ "${monitoring_changed}" = true ]; then
+              docker-compose -p monitoring -f docker-compose.monitoring.yml up -d
+              docker-compose -p monitoring -f docker-compose.monitoring.yml ps
+            fi
             docker-compose ps
           fi
 

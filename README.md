@@ -22,6 +22,22 @@
 - 버전 관리: GitHub
 - 배포 방식: SSH 원격 접속을 통한 컨테이너 오케스트레이션 및 관리
 
+## Local Dev
+- 최초 1회: `cp .env.example .env` 후 값 세팅
+- 실행: `docker compose up -d --build` → `http://localhost:8080`
+- 프론트 빠른 반영(빌드 없이): `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build`
+  - 이후 `dollar-front/src/main/resources/static` 수정 후 새로고침만 하면 반영됩니다.
+
+## Monitoring (Loki Stack)
+- 구성: Grafana + Loki + Promtail (ELK 대비 경량)
+- 실행(서버/로컬): `docker compose -p monitoring -f docker-compose.monitoring.yml up -d`
+  - Grafana는 `127.0.0.1:3000`에만 바인딩되어 외부에서 직접 접근 불가
+  - `-p monitoring`을 사용해야 앱 배포(`--remove-orphans`) 시 함께 삭제되지 않습니다.
+- 서버가 GUI 없는 경우(추천): 맥에서 SSH 터널
+  - `ssh -L 3000:127.0.0.1:3000 ubuntu@<mini-pc-ip>`
+  - 브라우저: `http://localhost:3000` (기본 계정 `admin` / 비번 `admin`, 필요 시 `GRAFANA_ADMIN_PASSWORD`로 변경)
+- 로그 확인: Grafana → Explore → Loki → 예) `{compose_service="dollar-user"}`
+
 
 
 ## 유저 트래픽 아키텍처

@@ -29,16 +29,25 @@
       background: var(--color-surface);
       box-shadow: var(--shadow-sm);
     }
-    #pagination button {
-      padding: 8px 14px;
-      border-radius: 999px;
-    }
-    #currentPage {
-      min-width: 24px;
-      text-align: center;
-      font-weight: 700;
-      color: var(--color-text);
-    }
+	    #pagination button {
+	      padding: 8px 14px;
+	      border-radius: 999px;
+	    }
+	    #pagination button:disabled {
+	      opacity: 0.5;
+	      cursor: not-allowed;
+	      transform: none;
+	      box-shadow: none;
+	      background: #e5e7eb;
+	      background-image: none;
+	      color: var(--color-muted);
+	    }
+	    #currentPage {
+	      min-width: 24px;
+	      text-align: center;
+	      font-weight: 700;
+	      color: var(--color-text);
+	    }
 
     /* 초기 로딩 스켈레톤 (JS 로딩 시 자동 치환) */
     .skeleton-grid {
@@ -112,35 +121,50 @@
 
   </main>
 
-  <script src="/js/env.js"></script>
-  <script>
-    const product_url = API.PRODUCT;
-    let currentPage = 1; // 현재 페이지 번호 초기화
-    let currentSearchQuery = null; // 현재 검색 쿼리를 저장하는 변수
+	  <script src="/js/env.js"></script>
+	  <script>
+	    const product_url = API.PRODUCT;
+	    const PAGE_SIZE = 12;
+	    let currentPage = 1; // 현재 페이지 번호 초기화
+	    let hasNextPage = true;
+	    let currentSearchQuery = null; // 현재 검색 쿼리를 저장하는 변수
+	    let isLoadingPage = false;
+
+	    const productListEl = document.getElementById('productList');
+	    const prevPageBtn = document.getElementById('prevPage');
+	    const nextPageBtn = document.getElementById('nextPage');
+	    const currentPageEl = document.getElementById('currentPage');
 
 
 
-    // 검색 쿼리를 전역 변수로 저장
-    document.addEventListener('DOMContentLoaded', function () {
-      const searchParams = new URLSearchParams(window.location.search);
-      currentSearchQuery = searchParams.get('search'); // 이 부분 추가
-      if (currentSearchQuery) {
-        // 검색어로 검색 결과 처리
-        fetchSearchProducts(currentSearchQuery);
-      } else {
-        // 일반 상품 목록 표시
-        fetchProducts();
-      }
-    });
+	    // 검색 쿼리를 전역 변수로 저장
+	    document.addEventListener('DOMContentLoaded', function () {
+	      const searchParams = new URLSearchParams(window.location.search);
+	      currentSearchQuery = searchParams.get('search'); // 이 부분 추가
+	      currentPage = 1;
+	      hasNextPage = true;
+	      updatePaginationUI();
+	      loadPage(1);
+	    });
 
-    function displayProducts(products) {
-      const productList = document.getElementById('productList');
-      productList.innerHTML = '';
+	    function displayProducts(products) {
+	      const productList = productListEl;
+	      productList.innerHTML = '';
 
-      products.forEach(product => {
-        const productElement = document.createElement('div');
-        productElement.classList.add("mainProductPage");
-        productElement.innerHTML = `
+	      if (!Array.isArray(products) || products.length === 0) {
+	        productList.innerHTML = `
+	          <div class="section surface text-center">
+	            <p class="muted">표시할 상품이 없습니다.</p>
+	          </div>
+	        `;
+	        productList.setAttribute('aria-busy', 'false');
+	        return;
+	      }
+
+	      products.forEach(product => {
+	        const productElement = document.createElement('div');
+	        productElement.classList.add("mainProductPage");
+	        productElement.innerHTML = `
             <div class="mainProductPage-imageBox">
             <!--<img src="images/TIL.jpeg" alt="${product.name}" style="cursor:pointer;" onclick="window.location.href = 'productDetail.html?productId=${product.id}'">-->
             <img src="${product.imageUrl}" alt="${product.name}"onclick="window.location.href = 'productDetail.html?productId=${product.id}'">
@@ -164,46 +188,88 @@
           addToCart(product, quantity);
         });
       });
-      // 로딩 상태 해제 표시
-      productList.setAttribute('aria-busy', 'false');
-    }
+	      // 로딩 상태 해제 표시
+	      productList.setAttribute('aria-busy', 'false');
+	    }
 
 
-    function fetchProducts() {
-      fetch(`${product_url}products?page=${currentPage - 1}&size=12`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(products => displayProducts(products))
-        .catch(error => console.error('Error:', error));
-    }
+	    function buildProductsUrl(page, searchQuery) {
+	      const pageIndex = Math.max(0, page - 1);
+	      if (searchQuery) {
+	        return `${product_url}products/search?page=${pageIndex}&size=${PAGE_SIZE}&search=${encodeURIComponent(searchQuery)}`;
+	      }
+	      return `${product_url}products?page=${pageIndex}&size=${PAGE_SIZE}`;
+	    }
 
-    document.getElementById('nextPage').addEventListener('click', () => {
-      currentPage += 1;
-      if (currentSearchQuery) {
-        fetchSearchProducts(currentSearchQuery); // 검색 결과에 대한 페이지 처리
-      } else {
-        fetchProducts(); // 일반 상품 목록에 대한 페이지 처리
-      }
-      document.getElementById('currentPage').innerText = currentPage;
-    });
+	    function updatePaginationUI() {
+	      currentPageEl.innerText = String(currentPage);
+	      prevPageBtn.disabled = isLoadingPage || currentPage <= 1;
+	      nextPageBtn.disabled = isLoadingPage || !hasNextPage;
+	    }
 
-    document.getElementById('prevPage').addEventListener('click', () => {
-      if (currentPage > 1) {
-        currentPage -= 1;
-        if (currentSearchQuery) {
-          fetchSearchProducts(currentSearchQuery); // 검색 결과에 대한 페이지 처리
-        } else {
-          fetchProducts(); // 일반 상품 목록에 대한 페이지 처리
-        }
-        document.getElementById('currentPage').innerText = currentPage;
-      }
-    });
+	    async function requestProducts(page, searchQuery) {
+	      const url = buildProductsUrl(page, searchQuery);
+	      const response = await fetch(url, { method: 'GET' });
+	      if (!response.ok) {
+	        throw new Error(`상품 조회 실패 (${response.status})`);
+	      }
+	      const data = await response.json();
+	      return Array.isArray(data) ? data : [];
+	    }
+
+	    async function loadPage(targetPage) {
+	      if (isLoadingPage) return;
+	      if (targetPage < 1) return;
+
+	      isLoadingPage = true;
+	      updatePaginationUI();
+	      productListEl.setAttribute('aria-busy', 'true');
+
+	      try {
+	        const products = await requestProducts(targetPage, currentSearchQuery);
+
+	        // 다음 페이지가 비어있으면 페이지 이동을 막고 "다음" 버튼만 비활성화
+	        if (products.length === 0 && targetPage > 1) {
+	          hasNextPage = false;
+	          productListEl.setAttribute('aria-busy', 'false');
+	          return;
+	        }
+
+	        currentPage = targetPage;
+	        hasNextPage = products.length === PAGE_SIZE;
+	        displayProducts(products);
+	      } catch (error) {
+	        console.error('Error:', error);
+	        productListEl.setAttribute('aria-busy', 'false');
+	      } finally {
+	        isLoadingPage = false;
+	        updatePaginationUI();
+	      }
+	    }
+
+	    // 헤더 검색(common.js)에서 호출할 수 있도록 전역 함수로 노출
+	    function fetchSearchProducts(searchQuery) {
+	      currentSearchQuery = (searchQuery && String(searchQuery).trim()) ? String(searchQuery).trim() : null;
+	      currentPage = 1;
+	      hasNextPage = true;
+	      updatePaginationUI();
+	      loadPage(1);
+	    }
+
+	    nextPageBtn.addEventListener('click', () => {
+	      if (isLoadingPage || !hasNextPage) return;
+	      loadPage(currentPage + 1);
+	    });
+
+	    prevPageBtn.addEventListener('click', () => {
+	      if (isLoadingPage || currentPage <= 1) return;
+	      loadPage(currentPage - 1);
+	    });
 
 
-    function fetchProductImage(productId) {
-      // S3에서 이미지를 가져오는 요청을 보냅니다.
-      return fetch(product_url + productId)
+	    function fetchProductImage(productId) {
+	      // S3에서 이미지를 가져오는 요청을 보냅니다.
+	      return fetch(product_url + productId)
         .then(response => {
           if (!response.ok) {
             throw new Error('Failed to fetch product image');
