@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  # Local dev helper:
+  # Serve static assets from the host filesystem so front changes reflect
+  # immediately without rebuilding the JAR/Docker image.
+  dollar-front:
+    environment:
+      - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/data/front-static/,classpath:/static/
+    volumes:
+      - ./dollar-front/src/main/resources/static:/data/front-static:ro

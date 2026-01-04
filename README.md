@@ -28,6 +28,9 @@
 - 프론트 빠른 반영(빌드 없이): `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build`
   - 이후 `dollar-front/src/main/resources/static` 수정 후 새로고침만 하면 반영됩니다.
 
+## Troubleshooting
+- `/api/*` 호출이 `502`면 Nginx가 백엔드 컨테이너(upstream)에 연결을 못 하는 상태입니다. 서버에서 `docker compose ps` / `docker compose logs -f dollar-user`로 먼저 확인하세요.
+
 ## Monitoring (Loki Stack)
 - 구성: Grafana + Loki + Promtail (ELK 대비 경량)
 - 실행(서버/로컬): `docker compose -p monitoring -f docker-compose.monitoring.yml up -d`

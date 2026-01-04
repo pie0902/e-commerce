@@ -9,18 +9,70 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.detect.outputs.services }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed services
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+            head="${{ github.event.pull_request.head.sha }}"
+          else
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+          fi
+
+          if [ -z "${base}" ] || [ "${base}" = "0000000000000000000000000000000000000000" ]; then
+            base="$(git rev-parse "${head}^" 2>/dev/null || true)"
+          fi
+
+          changed_files="$(git diff --name-only "${base}" "${head}" || true)"
+          echo "Changed files:"
+          echo "${changed_files}"
+
+          services=(dollar-front dollar-user dollar-product dollar-order dollar-review)
+          selected=()
+          for service in "${services[@]}"; do
+            if echo "${changed_files}" | grep -qE "^${service}/"; then
+              selected+=("${service}")
+            fi
+          done
+
+          json="["
+          first=true
+          for service in "${selected[@]}"; do
+            if [ "${first}" = true ]; then
+              first=false
+            else
+              json+=","
+            fi
+            json+="\"${service}\""
+          done
+          json+="]"
+
+          echo "services=${json}" >> "${GITHUB_OUTPUT}"
+
   build:
     name: Build (${{ matrix.service }})
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.services != '[]'
     strategy:
       fail-fast: false
       matrix:
-        service:
-          - dollar-front
-          - dollar-user
-          - dollar-product
-          - dollar-order
-          - dollar-review
+        service: ${{ fromJSON(needs.changes.outputs.services) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,3 +87,20 @@ jobs:
       - name: Build
         working-directory: ${{ matrix.service }}
         run: ./gradlew clean bootJar -x test
+
+  summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs:
+      - changes
+      - build
+    if: always()
+    steps:
+      - name: Final status
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "build job result: ${{ needs.build.result }}"
+          if [ "${{ needs.build.result }}" = "failure" ]; then
+            exit 1
+          fi

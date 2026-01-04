@@ -107,6 +107,12 @@ jobs:
             docker-compose ps
           fi
 
+          echo "Waiting for services to stabilize..."
+          sleep 5
+          echo "Reloading Nginx config..."
+          docker exec dollar-nginx nginx -s reload || echo "Nginx reload warning"
+      
+
       - name: Docker cleanup
         if: always()
         shell: bash
